@@ -29,8 +29,8 @@ def validation(user):
 @admin_panel.route('/main', methods=['GET'])
 @login_required
 def main():
-	validation(current_user)
-	return render_template('/main.html')
+    validation(current_user)
+    return render_template('/main.html')
 
 @admin_panel.route('/alldata', methods=['GET', 'POST'])
 @login_required
@@ -163,7 +163,6 @@ def location_mod(location_id):
 
 @admin_panel.route('/upload', methods=['GET', 'POST'])
 def upload():
-    print(os.path.dirname(os.getcwd()))
     if request.method == 'POST':
         if 'file' not in request.files:
             flash('No file part', "error")

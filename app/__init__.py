@@ -31,8 +31,8 @@ def register_extensions(app):
     return None
 
 def register_blueprints(app):
-    app.register_blueprint(admin_routes.admin_panel)
     app.register_blueprint(main_routes.main_panel)
+    app.register_blueprint(admin_routes.admin_panel)
 
 def register_errorhandlers(app):
     def render_error(error):
