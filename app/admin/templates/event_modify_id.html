@@ -1,0 +1,67 @@
+{% extends "adm_base.html" %}
+
+{% block content %}
+<form method="post" action="" enctype="multipart/form-data">
+{{ form.hidden_tag() }}
+<table>
+	<tr>
+		<th>Data Type</th>
+		<th>Current Value</th>
+		<th>Update Value</th>
+	</tr>
+	<tr>
+		<td>Event Id</td>
+		<td>{{ event.id }}</td>
+	</tr>
+	<tr>
+		<td>{{ form.name.label }}</td>
+		<td>{{ event.name }}</td>
+		<td>{{ form.name }}</td>
+		{% for error in form.name.errors %}
+		{{ error }}
+		{% endfor %}
+	</tr>
+	<tr>
+		<td>{{ form.capacity.label }}</td>
+		<td>{{ event.capacity }}</td>
+	</tr>
+	<tr>
+		<td>{{ form.max_cap.label }}</td>
+		<td>{{ event.max_capacity }}</td>
+		<td>{{ form.max_cap }}</td>
+		{% for error in form.max_cap.errors %}
+		{{ error }}
+		{% endfor %}
+	</tr>
+	<tr>
+		<td>{{ form.start_date.label }}</td>
+		<td>{{ event.start }}</td>
+		<td>{{ form.start_date }}</td>
+		{% for error in form.start_date.errors %}
+		{{ error }}
+		{% endfor %}
+	</tr>
+	<tr>
+		<td>{{ form.end_date.label }}</td>
+		<td>{{ event.end }}</td>
+		<td>{{ form.end_date }}</td>
+		{% for error in form.end_date.errors %}
+		{{ error }}
+		{% endfor %}
+	</tr>
+	<tr>
+		<td>Image</td>
+		<td>{{ event.img_name }}</td>
+		<td>{{ form.img_name }}</td>
+	</tr>
+	<tr>
+		<td>Description</td>
+		<td>{{ event.description }}</td>
+		<td>{{ form.description }}</td>
+	</tr>
+	<tr>
+		<td>{{ form.submit(onclick="confirm('Confirm changes?')") }}</td>
+	</tr>
+<table>
+</form>
+{% endblock %}

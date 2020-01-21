@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<script>
+function cf(book_id, event_id, qt){
+	if(confirm("Are you sure you wish to cancel the booking?")){
+		let form = document.getElementById("modification");
+		document.getElementById("book_id").value = book_id;
+		document.getElementById("event_id").value = event_id;
+		document.getElementById("qt").value = qt;
+		form.submit();
+	}
+}
+
+function md(book_id, event_id, qt){
+	md_qt = qt - document.getElementById("md_qt").value;
+	if(confirm("Are you sure you wish to return " + md_qt + " tickets for the event?")){
+		let form = document.getElementById("modification");
+		document.getElementById("book_id").value = book_id;
+		document.getElementById("event_id").value = event_id;
+		document.getElementById("qt").value = qt;
+		form.submit();
+	}
+}
+</script>
+{% if bookings %}
+<form id="modification" action="" method="post">
+{{ form.hidden_tag() }}
+<table style="border:1px solid black;">
+	<tr>
+		<th>No.</th>
+		<th>Event</th>
+		<th>Quantity</th>
+		<th>Modified Quantity</th>
+	</tr>
+	{% for booking in bookings %}
+		<tr>
+			<td>{{ loop.index }}</td>
+			<td><a href="{{ url_for('main_panel.load_event', event_id=booking.event_id) }}">{{ booking.name }}</a></td>
+			<td>{{ booking.quantity }}</td>
+			<td>{{ form.md_qt }}</td>
+			<td><a onclick="md({{ booking.id }}, {{ booking.event_id }}, {{ booking.quantity }})" style="color:blue;text-decoration:underline;">&#9632;</a></td>
+			<td><a onclick="cf({{ booking.id }}, {{ booking.event_id }}, {{ booking.quantity }})" style="color:red;text-decoration:underline;">&times;</a></td>
+			<td>
+				{% for error in form.md_qt.errors %}
+				{{ error }}
+				{% endfor %}
+			</td>
+		</tr>
+		<input type="submit" disabled style="display: none">
+	{% endfor %}
+</form>
+</table>
+{% else %}
+	<h3>You have no bookings currently.</h3>
+{% endif %}
+{% endblock %}

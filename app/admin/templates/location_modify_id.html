@@ -1,0 +1,56 @@
+{% extends "adm_base.html" %}
+
+{% block content %}
+<form method="post" action="">
+	{{ form.hidden_tag() }}
+	<table>
+		<tr>
+			<th>
+				Data Type
+			</th>
+			<th>
+				Current Value
+			</th>
+			<th>
+				Update Value
+			</th>
+		</tr>
+		<tr>
+			<td>
+				Id
+			</td>
+			<td>
+				{{ location.id }}
+			</td>
+			<td>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Location Name
+			</td>
+			<td>
+				{{ location.name }}
+			</td>
+			<td>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Address
+			</td>
+			<td>
+				{{ location.address }}
+			</td>
+			<td>
+				{{ form.address }}
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td>{{ form.submit }}</td>
+		</tr>
+	</table>
+</form>
+{% endblock %}

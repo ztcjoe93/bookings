@@ -1,0 +1,36 @@
+{% extends "adm_base.html" %}
+
+{% block content %}
+<form action="" method="post" enctype="multipart/form-data">
+	{{ form.hidden_tag() }}
+	<table>
+		<tr><td>{{ form.name.label }}</td></tr>
+		<tr><td>{{ form.name }}</td></tr>
+		<tr><td>{% for error in form.name.errors %}
+		{{ error }}
+		{% endfor %}</td></tr>
+		<tr><td>{{ form.capacity.label }}</td></tr>
+		<tr><td>{{ form.capacity}}</td></tr>
+		<tr><td>{% for error in form.capacity.errors %}
+		{{ error }}
+		{% endfor %}</td></tr>
+		<tr><td>{{ form.start_date.label }}</td></tr>
+		<tr><td>{{ form.start_date(class="datepicker") }}</td></tr>
+		<tr><td>{% for error in form.start_date.errors %}
+		{{ error }}
+		{% endfor %}</td></tr>
+		<tr><td>{{ form.end_date.label  }}</td></tr>
+		<tr><td>{{ form.end_date(class="datepicker") }}</td></tr>
+		<tr><td>{% for error in form.end_date.errors %}
+		{{ error }}
+		{% endfor %}</td></tr>
+		<tr><td>{{ form.location.label }}</td></tr>
+		<tr><td>{{ form.location }}</td></tr>
+		<tr><td>{% for error in form.location.errors %}
+		{{ error }}
+		{% endfor %}</td></tr>
+		<tr><td>{{ form.img_name }}</td></tr>
+		<tr><td>{{ form.submit }}</td></tr>
+	</table>
+</form>
+{% endblock %}

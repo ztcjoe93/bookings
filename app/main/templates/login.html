@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-column justify-content-center align-items-center container">
+ <img src="" alt="login_page">
+ <h1>Login Page</h1><br><br>
+ <form action="" method="post" novalidate>
+ {{ form.hidden_tag() }}
+ <p>
+ <div class="form-group">
+ <label for="form_user">{{ form.username.label }}</label><br>
+ {{ form.username(size=32, class="form-control", id="form_user") }}
+ </div>
+
+	{% for error in form.username.errors %}
+	<div class="alert alert-danger alert-dismissible fade show col-md-auto" role="alert">
+	 {{ error }}
+	 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	  <span aria-hidden="true">&times;</span>
+	 </button>
+	</div>
+	{% endfor %}
+ </p>
+ <p>
+ <div class="form-group">
+	 <label for="password">{{ form.password.label }}</label><br>
+	{{ form.password(size=32, class="form-control") }}
+
+	{% for error in form.password.errors %}
+	<div class="alert alert-danger alert-dismissible fade show col-md-auto" role="alert">
+	 {{ error }}
+	 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	  <span aria-hidden="true">&times;</span>
+	 </button>
+	</div>
+	{% endfor %} 
+ </p>
+ <p>
+ <div class="custom-control custom-switch">
+  <input type="checkbox" class="custom-control-input" id="remember">
+   <label class="custom-control-label" for="remember">Remember Me</label>
+ </div>
+ </p>
+ <p>
+ <button type="submit" class="btn btn-primary">Login</button>
+ </p>
+ </form>
+ <p>
+   <a href="{{ url_for('main_panel.register') }}">Register</a>
+   <a href="{{ url_for('main_panel.forget') }}">Forgot password</a>
+ </p>
+ </div>
+{% endblock %}

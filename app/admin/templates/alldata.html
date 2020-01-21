@@ -1,0 +1,31 @@
+{% extends "adm_base.html" %}
+
+{% block content %}
+<style>
+	table, td, th {
+		border: 1px solid black;
+		border-collapse: collapse;
+	}
+</style>
+{% for datapack in data_set %}
+<h2>{{ datapack[0].__tablename__.upper() }}</h2>
+<table>
+	<tr>
+	{% for attr in datapack[0].__dict__ %}
+	{% if not attr.startswith('_') %}
+	<th>{{ attr }}</th>
+	{% endif %}
+	{% endfor %}
+	</tr>
+{% for data in datapack %}
+	<tr>	
+	{% for attr in data.__dict__ %}
+	{% if not attr.startswith('_') %}
+	<td>{{ data[attr] }}</td>
+	{% endif %}
+	{% endfor %}
+	</tr>
+{% endfor %}
+</table>
+{% endfor %}
+{% endblock %}

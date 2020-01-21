@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<h1>Booking confirmation</h1>
+	<table>
+	{{ data.Event.name }}<br>
+	{{ data.Event.capacity }}<br>
+	{{ data.Event.start }}<br>
+	{{ data.Event.end }}<br>
+	{{ data.Location.name }}<br>
+	{{ data.Location.address }}<br><br>
+	</table>
+	<form action="" method="post">
+	{{ form.hidden_tag() }}
+	{{ form.amount(min="1", max="{{ data.Event.capacity }}") }}<br>
+	{% for error in form.amount.errors %}
+	{{ error }}
+	{% endfor %}
+
+	{% if data.Event.capacity==0 %}
+	{{ form.submit(disabled="") }}
+	{% else %}
+	{{ form.submit }}
+	{% endif %}
+	</form>
+{% endblock %}

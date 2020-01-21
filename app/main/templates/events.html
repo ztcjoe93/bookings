@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+{% if events %}
+<table>
+{% for event in events %}
+	<tr>
+		<td colspan="5" style="text-align:center;"><img src="{{ url_for('main_panel.download_file', filename='') }}{{event.img_name}}" style="max-height:50%;max-width:auto;"></img></td>
+	</tr>
+	<tr>
+		<th>Event</th>
+		<th>Capacity</th>
+		<th>Start Date/Time</th>
+		<th>End Date/Time</th>
+		<th>Location</th>
+	</tr>
+	<tr>
+		<td><a href="{{ url_for('main_panel.load_event', event_id=event.id) }}">{{ event.name }}</a></td>
+		<td>{{ event.capacity }}</td>
+		<td>{{ event.start }}</td>
+		<td>{{ event.end }}</td>
+		<td>{{ event.location_name }}</td>
+	</tr>
+	<tr>
+		<td colspan="5">{{ event.description }}</td>
+	</tr>
+{% endfor %}
+</table>
+{% else %}
+<h2>There are currently no active events</h2>
+{% endif %}
+{% endblock %}
