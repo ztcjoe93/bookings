@@ -2,9 +2,8 @@
 {% block content %}
 <form method="post" action="">
 	{{ form.hidden_tag() }}
-	<h1>Forget password</h1>
-	{{ form.email.label }}<br>
-	{{ form.email }}<br>
+	{{ form.password.label }} : {{ form.password }}<br>
+	{{ form.password_re.label }} : {{ form.password_re }}<br>
 	{{ form.submit }}
 </form>
 {% endblock %}

@@ -102,3 +102,12 @@ class UpdateLForm(FlaskForm):
     address = StringField('Address', validators=[Optional()])
     
     submit = SubmitField("Update")
+
+class PasswordRequestForm(FlaskForm):
+    email = StringField('Please enter your Email Address', validators=[InputRequired(), Email()])
+    submit = SubmitField('Submit')
+
+class PasswordResetForm(FlaskForm):
+    password = PasswordField('New Password', validators=[InputRequired()])
+    password_re = PasswordField('Re-enter Password', validators=[InputRequired(), EqualTo('password', 'Password does not match')])
+    submit = SubmitField('Submit')

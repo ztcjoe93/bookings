@@ -2,12 +2,13 @@ from flask import abort, redirect, url_for, render_template, request, make_respo
 from flask_login import current_user, login_user, logout_user, login_required
 from flask_mail import Mail, Message
 from flask import current_app as app
-from app.forms import LoginForm, RegistrationForm, BookingForm, RemoveForm
+from app.forms import LoginForm, RegistrationForm, BookingForm, RemoveForm, PasswordRequestForm, PasswordResetForm
 from app.models import db, User, Booking, Event, Location
 from app.extensions import mail
 from werkzeug.security import generate_password_hash
 from werkzeug.urls import url_parse
 from datetime import datetime
+from itsdangerous import URLSafeTimedSerializer
 import os.path
 
 #blueprint setup
@@ -136,34 +137,49 @@ def register():
         return redirect(url_for('main_panel.login'))
     return render_template('register.html', form=form)
 
-@main_panel.route('/list', methods=['GET'])
-def listo():
-    users = User.query.all()
-    bookings = Booking.query.all()
-    events = Event.query.all()
-
-    return render_template('data.html', users=users)
-
-@main_panel.route('/forget', methods=['GET', 'POST'])
-def forget():
-    if request.method == 'POST':
+@main_panel.route('/reset', methods=['GET', 'POST'])
+def reset():
+    form = PasswordRequestForm()
+    ts = URLSafeTimedSerializer(app.config.get('SECRET_KEY'))
+    
+    if form.validate_on_submit():
         user = User.query.filter_by(email=request.form['email']).first()
 
         if user is not None:
+            token = ts.dumps(user.email, salt='recover-pw')
+
+            recover_url = url_for('main_panel.reset_token', token=token, _external=True)
+            html = render_template('email_pw_reset.html', recover_url=recover_url)
+
+
             msg = Message(subject="Password reset request for NZR",
                         sender=app.config.get("MAIL_USERNAME"),
                         recipients=[user.email],
-                        html="Hello, we've received a request to reset the password for your NZR account.<br> \
-                            Kindly click on the following button to reset your password. \
-                            *If you did not request for this, please ignore this email.")
+                        html=html)
             mail.send(msg) 
 
-        flash("Password reset email successfully sent, kindly check your email.", "info") 
+        flash("Password reset requested, kindly check your email.", "info") 
         return redirect(url_for('main_panel.login'))
-    
-    return render_template('forget.html')
 
-@main_panel.route('/reset', methods=['GET', 'POST'])
-def reset():
-        
-    return render_template('reset.html')
+    return render_template('reset.html', form=form)
+
+@main_panel.route('/reset/<token>', methods=['GET', 'POST'])
+def reset_token(token):
+    ts = URLSafeTimedSerializer(app.config.get('SECRET_KEY'))
+    email = ts.loads(token, salt="recover-pw", max_age=86400) 
+    print("ts.loads = {}".format(email))
+
+    form = PasswordResetForm()
+    
+    if form.validate_on_submit():
+        print("succeed")
+        user = User.query.filter_by(email=email).first()
+        user.set_pwd(form.password.data)
+
+        db.session.commit()
+
+        return redirect(url_for('main_panel.login'))
+    else:
+        print("failed")
+    
+    return render_template('reset_token.html', form=form, token=token)
