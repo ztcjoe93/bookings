@@ -161,27 +161,6 @@ def location_mod(location_id):
 
     return render_template('/location_modify_id.html', form=form, location=location)
 
-<<<<<<< Updated upstream
-@admin_panel.route('/upload', methods=['GET', 'POST'])
-def upload():
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            flash('No file part', "error")
-            return redirect(request.url)
-        file = request.files['file']
-        
-        if file.filename == '':
-            flash('No selected file', "error")
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            flash("Successfully uploaded image.", "info")
-            return redirect(url_for('admin_panel.main'))
-    return render_template('/upload.html')
-
-=======
->>>>>>> Stashed changes
 @admin_panel.route('/message', methods=['GET', 'POST'])
 def message():
    
