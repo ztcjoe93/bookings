@@ -143,18 +143,27 @@ def reset():
 
 @main_panel.route('/reset/<token>', methods=['GET', 'POST'])
 def reset_token(token):
+<<<<<<< Updated upstream
     try:
         ts = URLSafeTimedSerializer(app.config['SECRET_KEY'])
         email = ts.loads(token, salt="recover-pw", max_age=86400) 
     except:
         pass
+=======
+    ts = URLSafeTimedSerializer(app.config.get('SECRET_KEY'))
+    email = ts.loads(token, salt="recover-pw", max_age=86400) 
+
+>>>>>>> Stashed changes
     form = PasswordResetForm()
     if form.validate_on_submit():
-        print("succeed")
         user = User.query.filter_by(email=email).first()
         user.set_pwd(form.password.data)
         db.session.commit()
         return redirect(url_for('main_panel.login'))
+<<<<<<< Updated upstream
     else:
         print("failed")
+=======
+    
+>>>>>>> Stashed changes
     return render_template('reset_token.html', form=form, token=token)
