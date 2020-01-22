@@ -29,8 +29,9 @@ def index(username=None):
 
 @main_panel.route('/events')
 def events():
-    events = db.session.query(Event).join(Location, Location.id==Event.location_id).with_entities(Event.id, Event.name, Event.capacity, Event.start, Event.end, Location.name.label('location_name'), Event.img_name, Event.description).all()
-    return render_template('events.html', events=events)
+    pages = db.session.query(Event).join(Location, Location.id==Event.location_id).with_entities(Event.id, Event.name, Event.capacity, Event.start, Event.end, Location.name.label('location_name'), Event.img_name, Event.description).paginate(max_per_page=5)
+    events = pages.items
+    return render_template('events.html', events=events, pagination=pages)
 
 @main_panel.route('/events/<int:event_id>', methods=['GET', 'POST'])
 def load_event(event_id):

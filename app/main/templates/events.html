@@ -25,6 +25,22 @@
 	</tr>
 {% endfor %}
 </table>
+{% macro render_pagination(pagination, endpoint) %}
+  <div class=pagination>
+  {%- for page in pagination.iter_pages() %}
+    {% if page %}
+      {% if page != pagination.page %}
+        <a href="{{ url_for(endpoint, page=page) }}">{{ page }}</a>
+      {% else %}
+        <strong>{{ page }}</strong>
+      {% endif %}
+    {% else %}
+      <span class=ellipsis>…</span>
+    {% endif %}
+  {%- endfor %}
+  </div>
+{% endmacro %}
+{{ render_pagination(pagination, 'main_panel.events') }}
 {% else %}
 <h2>There are currently no active events</h2>
 {% endif %}
