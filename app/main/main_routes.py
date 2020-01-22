@@ -79,6 +79,7 @@ def book(event_id):
                         book_time=datetime.utcnow())
         db.session.add(booking)
         db.session.commit()
+        app.logger.info('[User ID {} has booked {} tickets for Event ID {}.]'.format(booking.user_id, booking.quantity, booking.event_id))
         flash('Successfully purchased {} tickets for {}'.format(form.amount.data, data.Event.name)) 
         return redirect(url_for('main_panel.events'))
     return render_template('book.html', event_id=event_id, data=data, form=form)
@@ -96,6 +97,7 @@ def login():
         login_user(user, remember=form.remember.data)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
+            app.logger.info('[User {} has logged in.]'.format(user.username))
             flash('Successfully logged in!', 'info')
             return redirect(url_for('main_panel.index'))
         else:
@@ -104,6 +106,7 @@ def login():
 
 @main_panel.route('/logout')
 def logout():
+    app.logger.info('[User {} has logged out.]'.format(current_user.username))
     logout_user()
     flash('Successfully logged out!', 'info')
     return redirect(url_for('main_panel.index'))
@@ -118,6 +121,7 @@ def register():
         db.session.add(user)
         db.session.commit()
         flash("Your account has been successfully created at {}".format(user.username, datetime.utcnow()), "info")
+        app.logger.info('[User {} has been newly registered.]'.format(user.username)) 
         return redirect(url_for('main_panel.login'))
     return render_template('register.html', form=form)
 

@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 
 login_manager = LoginManager()
+login_manager.login_view = 'main_panel.login'
 db = SQLAlchemy()
 migrate = Migrate()
 mail = Mail()

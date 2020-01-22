@@ -1,6 +1,8 @@
 import logging
 import sys
+import os
 from flask import Flask, render_template
+from logging.handlers import RotatingFileHandler
 from .admin import admin_routes
 from .main import main_routes
 
@@ -11,8 +13,6 @@ from app.extensions import (
         mail
 )
 
-login_manager.login_view = 'main_panel.login'
-
 def create_app(config_object="app.settings"):
     app = Flask(__name__, static_url_path='/static')
     app.config.from_object(config_object)
@@ -20,6 +20,8 @@ def create_app(config_object="app.settings"):
     register_extensions(app)
     register_blueprints(app)
     register_errorhandlers(app)
+
+    register_logger(app)
     
     return app
 
@@ -41,4 +43,15 @@ def register_errorhandlers(app):
 
     for errcode in [401, 403, 404, 500]:
         app.errorhandler(errcode)(render_error)
+    return None
+
+def register_logger(app):
+    if not os.path.exists('logs'):
+        os.mkdir('logs')
+
+    fhandler = RotatingFileHandler('logs/information.log', maxBytes=20480, backupCount=20)
+    fhandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s'))
+    app.logger.addHandler(fhandler)
+    app.logger.setLevel(logging.DEBUG)
+
     return None

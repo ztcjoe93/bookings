@@ -25,7 +25,7 @@ admin_panel = Blueprint('admin_panel',
 
 def validation(user):
     if user.su_rights == False:
-        app.logger.info("Attempt to log in to admin panel by user: %s", user.username)
+        app.logger.info("[Attempt to log in to admin panel by user_id: %s]", user.id)
         return False
     else:
         return True 
