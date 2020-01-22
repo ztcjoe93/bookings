@@ -1,43 +1,69 @@
-<html>
+<!doctype html>
+<html lang="en">
 	<head>
+		<!-- Requried meta tags -->
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<!-- Bootstrap CDN -->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 		<title>Bookings</title>
 	</head>
 	<body>
-		<nav class>
-			<a href="#"><img src="" alt="event_logo">Events Booking</a>	
-			<ul>
-				<li><a href="{{ url_for('main_panel.index') }}">Home</a></li>
-		  		<li><a href="{{ url_for('main_panel.events') }}">Events</a></li>
-				<li><a href="{{ url_for('main_panel.mybookings') }}">My Bookings</a></li>
-			</ul>
+		<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+			<span class="navbar-text text-white font-weight-bold">
+				<img src="" alt="event_logo">Events Booking
+			</span>
+			<div class="collapse navbar-collapse d-flex justify-content-between">
+				<ul class="navbar-nav l-auto">
+					<li class="nav-item"><a class="nav-link" href="{{ url_for('main_panel.index') }}">Home</a></li>
+					<li class="nav-item"><a class="nav-link" href="{{ url_for('main_panel.events') }}">Events</a></li>
+					<li class="nav-item"><a class="nav-link" href="{{ url_for('main_panel.mybookings') }}">My Bookings</a></li>
+				</ul>
 
-			{% if current_user.is_anonymous %}
-				<a href="{{ url_for('main_panel.login') }}">Login</a>
-		  	{% else %}
-				Welcome, {{ current_user.username }}!
+				<ul class="navbar-nav r-auto">
+				{% if current_user.is_anonymous %}
+					<li class="nav-item"><a class="nav-link" href="{{ url_for('main_panel.login') }}">Login</a></li>
+				{% else %}
+					<span class="navbar-text text-white font-weight-bold">
+						Welcome, {{ current_user.username }}!
+					</span>
+					{% if current_user.su_rights %}
+					<li class="nav-item"><a class="nav-link" href="{{ url_for('admin_panel.main') }}">Admin Panel</a></li>
+					{% endif %}
 
-		  		{% if current_user.su_rights %}
-					<a href="{{ url_for('admin_panel.main') }}">Admin Panel</a>
+					<li class="nav-item"><a class="nav-link" href="{{ url_for('main_panel.logout') }}">Logout</a></li>
 				{% endif %}
-
-		  		<a href="{{ url_for('main_panel.logout') }}">Logout</a>
-		  	{% endif %}
+				</ul>
+			</div>
 		</nav>	
 
-		<!-- flash messages based on flash category  -->
-		{% with messages = get_flashed_messages(with_categories=true) %}
-			{% for category, message in messages %}
-				{% if category == "error" or category == "message" %}
-					<!-- red alert div -->
-			{% elif category == "info" %}
-					<!-- green alert div -->
-			{% endif %}
-				{{ message }}
-					<!-- end alert div -->
-			{% endfor %}
- 		{% endwith %}
-	
-		{% block content %}{% endblock %}
+		<div class="d-flex flex-column text-center">
+			<div>
+			<!-- flash messages based on flash category  -->
+			{% with messages = get_flashed_messages(with_categories=true) %}
+				{% for category, message in messages %}
+					{% if category == "error" or category == "message" %}
+						<!-- red alert div -->
+						<div id="alert" class="alert alert-danger alert-dismissable fade show" role="alert">
+				{% elif category == "info" %}
+						<!-- green alert div -->
+						<div id="alert" class="alert alert-success alert-dismissable fade show" role="alert">
+				{% endif %}
+				{{ message }} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<!-- end alert div -->
+						</div>
+				{% endfor %}
+			{% endwith %}
+			</div>
+
+			<div>
+			{% block content %}{% endblock %}
+			</div>
 		</div>
+
+		<!-- JS dependencies -->
+		<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+		<script src="/static/alert.js"></script>
 	</body>
 </html>
