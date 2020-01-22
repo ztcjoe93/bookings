@@ -33,7 +33,7 @@ def validation(user):
 @admin_panel.route('/main', methods=['GET'])
 @login_required
 def main():
-    return redirect(url_for('main_panel.index')) if validation(current_user)==True else render_template('/main.html')
+    return render_template('/main.html') if validation(current_user)==True else redirect(url_for('main_panel.index'))
 
 @admin_panel.route('/alldata', methods=['GET', 'POST'])
 @login_required
@@ -45,7 +45,7 @@ def alldata():
 
     data_set = [users, bookings, events, locations]
 
-    return render_template('/alldata.html', data_set=data_set) if validation(current_user)==True else render_template('/main.html')
+    return render_template('/alldata.html', data_set=data_set) if validation(current_user)==True else redirect(url_for('main_panel.index'))
 
 
 @admin_panel.route('/event_create', methods=['GET', 'POST'])
@@ -73,7 +73,7 @@ def event_create():
         db.session.commit()
         return redirect(url_for('admin_panel.main'))
 
-    return render_template('/event_create.html', form=form) if validation(current_user)==True else render_template('/main.html')
+    return render_template('/event_create.html', form=form) if validation(current_user)==True else redirect(url_for('main_panel.index'))
 
 
 @admin_panel.route('/location_create', methods=['GET', 'POST'])
@@ -85,14 +85,14 @@ def location_create():
         flash("Successfully created Location: {}".format(request.form.get("loc_name")))
         return redirect(url_for('admin_panel.main'))
     
-    return render_template('/location_create.html') if validation(current_user)==True else render_template('/main.html')
+    return render_template('/location_create.html') if validation(current_user)==True else redirect(url_for('main_panel.index'))
 
 
 @admin_panel.route('/event_modify', methods=['GET', 'POST'])
 def event_modify():
     events = Event.query.all()
 
-    return render_template('/event_modify.html', events=events) if validation(current_user)==True else render_template('/main.html')
+    return render_template('/event_modify.html', events=events) if validation(current_user)==True else redirect(url_for('main_panel.index'))
 
 
 @admin_panel.route('/event_modify/<int:event_id>', methods=['GET', 'POST'])
@@ -140,14 +140,14 @@ def event_mod(event_id):
         db.session.commit()
         return redirect(url_for('admin_panel.event_modify'))
     
-    return render_template('event_modify_id.html', form=form, event=event, locations=locations) if validation(current_user)==True else render_template('/main.html')
+    return render_template('event_modify_id.html', form=form, event=event, locations=locations) if validation(current_user)==True else redirect(url_for('main_panel.index'))
 
 
 @admin_panel.route('/location_modify', methods=['GET'])
 def location_modify():
     locations = Location.query.all()
             
-    return render_template('/location_modify.html', locations=locations) if validation(current_user)==True else render_template('/main.html')
+    return render_template('/location_modify.html', locations=locations) if validation(current_user)==True else redirect(url_for('main_panel.index'))
 
 
 @admin_panel.route('/location_modify/<int:location_id>', methods=['GET', 'POST'])
@@ -162,7 +162,7 @@ def location_mod(location_id):
 
         return redirect(url_for('admin_panel.location_modify'))
 
-    return render_template('/location_modify_id.html', form=form, location=location) if validation(current_user)==True else render_template('/main.html')
+    return render_template('/location_modify_id.html', form=form, location=location) if validation(current_user)==True else redirect(url_for('main_panel.index'))
 
 
 @admin_panel.route('/message', methods=['GET', 'POST'])
@@ -176,5 +176,5 @@ def message():
                         body=content)
         mail.send(msg)
 
-    return render_template('message.html') if validation(current_user)==True else render_template('/main.html')
+    return render_template('message.html') if validation(current_user)==True else redirect(url_for('main_panel.index'))
 
