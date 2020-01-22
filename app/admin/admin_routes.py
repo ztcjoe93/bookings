@@ -1,12 +1,13 @@
+import logging
 from flask import Blueprint, render_template, redirect, url_for, flash, make_response, request
 from flask import current_app as app
 from flask_login import current_user, login_user, logout_user, login_required
 from flask_mail import Message, Mail
 from werkzeug.urls import url_parse
 from werkzeug.utils import secure_filename
-from app.models import db, User, Booking, Event, Location
+from app.models import User, Booking, Event, Location
 from app.forms import EventForm, UpdateForm, UpdateLForm
-from app.extensions import mail
+from app.extensions import mail, login_manager, db
 import datetime
 import os
 
@@ -24,18 +25,19 @@ admin_panel = Blueprint('admin_panel',
 
 def validation(user):
     if user.su_rights == False:
-        return make_response(), 404
+        app.logger.info("Attempt to log in to admin panel by user: %s", user.username)
+        return False
+    else:
+        return True 
 
 @admin_panel.route('/main', methods=['GET'])
 @login_required
 def main():
-    validation(current_user)
-    return render_template('/main.html')
+    return redirect(url_for('main_panel.index')) if validation(current_user)==False else render_template('/main.html')
 
 @admin_panel.route('/alldata', methods=['GET', 'POST'])
 @login_required
 def alldata():
-    validation(current_user)
     users = User.query.all()
     bookings = Booking.query.all()
     events = Event.query.all()
@@ -43,12 +45,12 @@ def alldata():
 
     data_set = [users, bookings, events, locations]
 
-    return render_template('/alldata.html', data_set=data_set) 
+    return render_template('/alldata.html', data_set=data_set) if validation(current_user)==False else render_template('/main.html')
+
 
 @admin_panel.route('/event_create', methods=['GET', 'POST'])
 @login_required
 def event_create():
-    validation(current_user)
     form = EventForm()
     form.location.choices = [(location.id, location.name) for location in Location.query.all()]
 
@@ -71,12 +73,11 @@ def event_create():
         db.session.commit()
         return redirect(url_for('admin_panel.main'))
 
-    return render_template('/event_create.html', form=form)
+    return render_template('/event_create.html', form=form) if validation(current_user)==False else render_template('/main.html')
+
 
 @admin_panel.route('/location_create', methods=['GET', 'POST'])
 def location_create():
-    validation(current_user)
-
     if request.method=='POST':
         db.session.add(Location(name=request.form.get("loc_name"),
                                 address=request.form.get("address")))
@@ -84,14 +85,15 @@ def location_create():
         flash("Successfully created Location: {}".format(request.form.get("loc_name")))
         return redirect(url_for('admin_panel.main'))
     
-    return render_template('/location_create.html')
+    return render_template('/location_create.html') if validation(current_user)==False else render_template('/main.html')
+
 
 @admin_panel.route('/event_modify', methods=['GET', 'POST'])
 def event_modify():
-    validation(current_user)
     events = Event.query.all()
 
-    return render_template('/event_modify.html', events=events)
+    return render_template('/event_modify.html', events=events) if validation(current_user)==False else render_template('/main.html')
+
 
 @admin_panel.route('/event_modify/<int:event_id>', methods=['GET', 'POST'])
 def event_mod(event_id):
@@ -138,14 +140,15 @@ def event_mod(event_id):
         db.session.commit()
         return redirect(url_for('admin_panel.event_modify'))
     
-    return render_template('event_modify_id.html', form=form, event=event, locations=locations)
+    return render_template('event_modify_id.html', form=form, event=event, locations=locations) if validation(current_user)==False else render_template('/main.html')
+
 
 @admin_panel.route('/location_modify', methods=['GET'])
 def location_modify():
-    validation(current_user)
     locations = Location.query.all()
             
-    return render_template('/location_modify.html', locations=locations)
+    return render_template('/location_modify.html', locations=locations) if validation(current_user)==False else render_template('/main.html')
+
 
 @admin_panel.route('/location_modify/<int:location_id>', methods=['GET', 'POST'])
 def location_mod(location_id):
@@ -159,11 +162,11 @@ def location_mod(location_id):
 
         return redirect(url_for('admin_panel.location_modify'))
 
-    return render_template('/location_modify_id.html', form=form, location=location)
+    return render_template('/location_modify_id.html', form=form, location=location) if validation(current_user)==False else render_template('/main.html')
+
 
 @admin_panel.route('/message', methods=['GET', 'POST'])
 def message():
-   
     if request.method == 'POST':
         content = request.form['message']
         
@@ -173,4 +176,5 @@ def message():
                         body=content)
         mail.send(msg)
 
-    return render_template('message.html')
+    return render_template('message.html') if validation(current_user)==False else render_template('/main.html')
+

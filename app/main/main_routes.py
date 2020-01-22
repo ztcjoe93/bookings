@@ -25,7 +25,6 @@ def main_url():
 def index(username=None):
     if current_user.is_authenticated:
         username = current_user.username
-    print("test")
     return render_template('index.html', username=username)
 
 @main_panel.route('/events')
