@@ -55,6 +55,7 @@ def mybookings():
             difference = booking.quantity - form.md_qt.data
             booking.quantity = form.md_qt.data 
             Event.query.get(form.event_id.data).capacity += difference
+            booking.last_modified = datetime.utcnow() 
         else:
             Booking.query.filter(Booking.id==form.book_id.data).delete()
             Event.query.get(form.event_id.data).capacity += form.qt.data
@@ -81,7 +82,7 @@ def book(event_id):
         db.session.add(booking)
         db.session.commit()
         app.logger.info('[User ID {} has booked {} tickets for Event ID {}.]'.format(booking.user_id, booking.quantity, booking.event_id))
-        flash('Successfully purchased {} tickets for {}'.format(form.amount.data, data.Event.name)) 
+        flash('Successfully purchased {} tickets for {}'.format(form.amount.data, data.Event.name), "info") 
         return redirect(url_for('main_panel.events'))
     return render_template('book.html', event_id=event_id, data=data, form=form)
 

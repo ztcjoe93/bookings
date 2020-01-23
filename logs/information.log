@@ -39,3 +39,5 @@
 2020-01-22 19:59:13,063 INFO app Thread-39 : [User test has logged out.]
 2020-01-22 20:02:16,108 INFO app Thread-8 : [User test has logged in.]
 2020-01-22 20:02:24,155 INFO app Thread-10 : [User test has logged out.]
+2020-01-23 19:44:36,658 INFO app Thread-159 : [User ID 1 has booked 12 tickets for Event ID 1.]
+2020-01-23 19:50:14,568 INFO app Thread-7 : [User ID 1 has booked 5 tickets for Event ID 1.]

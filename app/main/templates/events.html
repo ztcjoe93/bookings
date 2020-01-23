@@ -1,17 +1,21 @@
 {% extends "base.html" %}
 {% block content %}
 {% if events %}
-<table>
+<table class="table table-bordered w-50 mx-auto">
 {% for event in events %}
-	<tr>
-		<td colspan="5" style="text-align:center;"><img src="{{ url_for('main_panel.download_file', filename='') }}{{event.img_name}}" style="max-height:50%;max-width:auto;"></img></td>
+	<tr>	
+	{% if event.img_name %}
+		<td colspan="5" class="p-0"><img class="w-100" src="{{ url_for('main_panel.download_file', filename='') }}{{event.img_name}}"></img></td>
+	{% else %}
+		<td colspan="5"></td>
+	{% endif %}
 	</tr>
 	<tr>
 		<th>Event</th>
-		<th>Capacity</th>
-		<th>Start Date/Time</th>
-		<th>End Date/Time</th>
-		<th>Location</th>
+		<th scope="col">Capacity</th>
+		<th scope="col">Start Date/Time</th>
+		<th scope="col">End Date/Time</th>
+		<th scope="col">Location</th>
 	</tr>
 	<tr>
 		<td><a href="{{ url_for('main_panel.load_event', event_id=event.id) }}">{{ event.name }}</a></td>
@@ -26,19 +30,29 @@
 {% endfor %}
 </table>
 {% macro render_pagination(pagination, endpoint) %}
-  <div class=pagination>
-  {%- for page in pagination.iter_pages() %}
+<ul class="pagination justify-content-center py-5">
+	{% if pagination.has_prev %}
+	<li class="page-item">
+	{% else %}
+	<li class="page-item disabled">
+	{% endif %}<a class="page-link" href="{{ url_for(endpoint, page=pagination.prev_num) }}">Previous</a></li>
+  {% for page in pagination.iter_pages() %}
     {% if page %}
       {% if page != pagination.page %}
-        <a href="{{ url_for(endpoint, page=page) }}">{{ page }}</a>
+	  <li class="page-item"><a class="page-link" href="{{ url_for(endpoint, page=page) }}">{{ page }}</a></li>
       {% else %}
-        <strong>{{ page }}</strong>
+	  <li class="page-item active"><a class="page-link">{{ page }}</a></li>
       {% endif %}
     {% else %}
       <span class=ellipsis>…</span>
     {% endif %}
-  {%- endfor %}
-  </div>
+  {% endfor %}
+ 	{% if pagination.has_next %}
+	<li class="page-item">
+	{% else %}
+	<li class="page-item disabled">
+	{% endif %}<a class="page-link" href="{{ url_for(endpoint, page=pagination.next_num) }}">Next</a></li>
+  </ul>
 {% endmacro %}
 {{ render_pagination(pagination, 'main_panel.events') }}
 {% else %}

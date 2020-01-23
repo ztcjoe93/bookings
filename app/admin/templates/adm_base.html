@@ -1,45 +1,76 @@
-<html>
+<!doctype html>
+<html lang="en">
 	<head>
-		<title>Bookings Admin</title>
+		<!-- Requried meta tags -->
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<!-- Bootstrap CDN -->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+		<title>Bookings - Admin</title>
 	</head>
 	<body>
-		<nav class>
-			<a href="#"><img src="" width="30" height="30" alt="">Events Booking - Admin Panel</a>
-			
-			<ul>
-				<li><a href="{{ url_for('admin_panel.alldata') }}">All Data</a></li>
-				<li>Create
-					<ul>
-			  			<li><a href="{{ url_for('admin_panel.event_create') }}">Event</a></li>
-			  			<li><a href="{{ url_for('admin_panel.location_create') }}">Location</a></li>
-					</ul>
-				</li>
-				<li>Modify
-					<ul>
-						<li><a href="{{ url_for('admin_panel.event_modify') }}">Event</a></li>
-						<li><a href="{{ url_for('admin_panel.location_modify') }}">Location</a></li>
-					</ul>
-				</li>
-				<li><a href="{{ url_for('admin_panel.message') }}">Message</a></li>
-		 	</ul>
-				<a class="nav-link" href="{{ url_for('main_panel.index') }}">User Panel</a>
-		  		<a class="nav-link" href="{{ url_for('main_panel.logout') }}">Logout</a>
+		<nav class="navbar navbar-expand-md navbar-light" style="background-color: #D3D3D3;">
+			<span class="navbar-text text-grey font-weight-bold">
+				<img src="" alt="event_logo">Events Booking - Admin
+			</span>
+			<div class="collapse navbar-collapse d-flex justify-content-between">
+
+				<ul class="navbar-nav l-auto">
+					<li class="nav-item"><a class="nav-link" href="{{ url_for('admin_panel.alldata') }}">All Data</a></li>
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="create" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Create</a>
+						<div class="dropdown-menu" aria-labelledby="create">
+							<a class="dropdown-item" href="{{ url_for('admin_panel.event_create') }}">Event</a>
+							<a class="dropdown-item" href="{{ url_for('admin_panel.location_create') }}">Location</a>
+						</div>
+					</li>
+
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="create" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Modify</a>
+						<div class="dropdown-menu" aria-labelledby="create">
+							<a class="dropdown-item" href="{{ url_for('admin_panel.event_modify') }}">Event</a>
+							<a class="dropdown-item" href="{{ url_for('admin_panel.location_modify') }}">Location</a>
+						</div>
+					</li>
+					<li class="nav-item"><a class="nav-link" href="{{ url_for('admin_panel.message') }}">Message</a></li>
+		 		</ul>
+
+				<ul class="navbar-nav r-auto">
+					<span class="navbar-text text-blue font-weight-bold">
+						Welcome, {{ current_user.username }}!
+					</span>
+					<li class="nav-item"><a class="nav-link" href="{{ url_for('main_panel.index') }}">User Panel</a></li>
+					<li class="nav-item"><a class="nav-link" href="{{ url_for('main_panel.logout') }}">Logout</a></li>
+				</ul>
 		</nav>
 
-		<!-- flash messages based on flash category  -->
-		{% with messages = get_flashed_messages(with_categories=true) %}
-		{% for category, message in messages %}
-		{% if category == "error" or category == "message" %}
-		<div class="">
-		{% elif category == "info" %}
-		<div class="">
-		{% endif %}
-		{{ message }}
-		{% endfor %}
-		</div> 
- 		{% endwith %}
-	
-		{% block content %}{% endblock %}
+		<div class="d-flex flex-column text-center">
+			<div>
+			<!-- flash messages based on flash category  -->
+			{% with messages = get_flashed_messages(with_categories=true) %}
+				{% for category, message in messages %}
+					{% if category == "error" or category == "message" %}
+						<!-- red alert div -->
+						<div id="alert" class="alert alert-danger alert-dismissable fade show" role="alert">
+					{% elif category == "info" %}
+						<!-- green alert div -->
+						<div id="alert" class="alert alert-success alert-dismissable fade show" role="alert">
+					{% endif %}
+				{{ message }} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<!-- end alert div -->
+						</div>
+				{% endfor %}
+			{% endwith %}
+			</div>
+
+			<div class="d-flex flex-column justify-content-center py-5">
+			{% block content %}{% endblock %}
+			</div>
 		</div>
+
+		<!-- JS dependencies -->
+		<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+		<script src="/static/alert.js"></script>
 	</body>
 </html>
