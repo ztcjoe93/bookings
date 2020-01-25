@@ -5,6 +5,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from flask_mail import Message, Mail
 from werkzeug.urls import url_parse
 from werkzeug.utils import secure_filename
+from sqlalchemy import inspect
 from app.models import User, Booking, Event, Location
 from app.forms import EventForm, UpdateForm, UpdateLForm
 from app.extensions import mail, login_manager, db

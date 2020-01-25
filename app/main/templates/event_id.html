@@ -1,33 +1,32 @@
 {% extends "base.html" %}
 
 {% block content %}
-<style>
-	table, th, td {
-		border: 1px solid black;
-		border-collapse: collapse;
-	}
-</style>
-<table>
-	<tr>
-		<td>Event</td>
-		<td>{{ data.Event.name }}</td>
-	</tr>
-	<tr>
-		<td>Location</td>
-		<td>{{ data.Location.name }}<br>{{ data.Location.address }}</td>
-	</tr>
-	<tr>
-		<td>Current Event Capacity</td>
-		<td>{{ data.Event.capacity }}</td>
-	</tr>
-	<tr>
-		<td>Start Time</td>
-		<td>{{ data.Event.start }}</td>
-	</tr>
-	<tr>
-		<td>End Time</td>
-		<td>{{ data.Event.end }}</td>
-	</tr>
-</table>
-<a href="{{ url_for('main_panel.book', event_id=event_id) }}">Book</a>
+<div class="w-75 mx-auto">
+	{% if data.Event.img_name %}
+	<img src="{{ url_for('main_panel.download_file', filename='') }}{{data.Event.img_name}}"></img>
+	{% endif %}
+	<table class="table d-flex justify-content-center">
+		<tr>
+			<td>Event</td>
+			<td>{{ data.Event.name }}</td>
+		</tr>
+		<tr>
+			<td>Location</td>
+			<td>{{ data.Location.name }}<br>{{ data.Location.address }}</td>
+		</tr>
+		<tr>
+			<td>Current Event Capacity</td>
+			<td>{{ data.Event.capacity }}</td>
+		</tr>
+		<tr>
+			<td>Start Time</td>
+			<td>{{ data.Event.start }}</td>
+		</tr>
+		<tr>
+			<td>End Time</td>
+			<td>{{ data.Event.end }}</td>
+		</tr>
+	</table>
+	<a href="{{ url_for('main_panel.book', event_id=event_id) }}">Book</a>
+</div>
 {% endblock %}

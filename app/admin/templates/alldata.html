@@ -1,31 +1,23 @@
 {% extends "adm_base.html" %}
 
 {% block content %}
-<style>
-	table, td, th {
-		border: 1px solid black;
-		border-collapse: collapse;
-	}
-</style>
-{% for datapack in data_set %}
-	<h2>{{ datapack[0].__tablename__.upper() }}</h2>
-	<table>
-		<tr>
-			{% for attr in datapack[0].__dict__ %}
-				{% if not attr.startswith('_') %}
-					<th>{{ attr }}</th>
-				{% endif %}
-			{% endfor %}
-		</tr>
-	{% for data in datapack %}
-		<tr>	
-			{% for attr in data.__dict__ %}
-				{% if not attr.startswith('_') %}
+<div class="w-75 mx-auto">
+	{% for datapack in data_set %}
+		<h2>{{ datapack[0].__tablename__.upper() }}</h2>
+		<table class="table">
+			<tr>
+				{% for attr in datapack[0].__table__.columns %}
+					<th>{{ attr.key }}</th>
+				{% endfor %}
+			</tr>
+		{% for data in datapack %}
+			<tr>	
+				{% for attr in data.__table__.columns.keys() %}
 					<td>{{ data[attr] }}</td>
-				{% endif %}
-			{% endfor %}
-		</tr>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+		</table>
 	{% endfor %}
-	</table>
-{% endfor %}
+</div>
 {% endblock %}
