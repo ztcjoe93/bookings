@@ -1,0 +1,58 @@
+{% extends "adm_base.html" %}
+
+{% block content %}
+<script>
+function sb(data){
+	if(confirm("Are you sure you wish to remove the event?")){
+		let form = document.getElementById("theForm");
+		if(document.getElementById("model_type").value=='event'){
+			document.getElementById("event_id").value = data;
+		} else {
+			document.getElementById("location_id").value = data;
+		}
+		form.submit();
+	}
+}
+</script>
+{%if form.model_type.data=="event"%}
+	<h2>Events</h2>
+	{%else%}
+	<h2>Locations</h2>
+{%endif%}
+
+<form id="theForm" method="post" action="">
+{{form.hidden_tag()}}
+<table class="table w-75 mx-auto mt-5">
+	<tbody>
+	{%if data%}
+	<tr>
+		{%for attr in data[0].__table__.columns%}
+		<td>{{attr.key}}</td>
+		{%endfor%}
+		<td> </td>
+	</tr>
+	{% for d in data %}
+		<tr>
+			{%for attr in d.__table__.columns.keys()%}
+			{%if attr == "name"%}	
+				{%if form.model_type.data == "event" %}
+				<td><a href="{{url_for('admin_panel.event_mod', event_id=d['id'])}}">{{d[attr]}}</td>
+				{%else%}
+				<td><a href="{{url_for('admin_panel.location_mod', location_id=d['id'])}}">{{d[attr]}}</td>
+				{%endif%}
+			{%else%}
+			<td>{{d[attr]}}</td>
+			{%endif%}
+			{%endfor%}
+			<td><a onclick="sb({{d.id}})" class="btn btn-primary">Remove</a></td>
+		</tr>
+	{% endfor %}
+{%else%}
+	<tr>
+		<td colspan="6">There are currently no events</td>
+	</tr>
+{%endif%}
+	</tbody>
+</table>
+</form>
+{% endblock %}

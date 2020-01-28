@@ -62,7 +62,7 @@ def mybookings():
         
         flash("Successfully updated.", "info")
         db.session.commit()
-        return redirect(url_for('main_panel.events'))
+        return redirect(url_for('main_panel.mybookings'))
     return render_template('mybookings.html', bookings=bookings, form=form)
 
 @main_panel.route('/book/<int:event_id>', methods=['GET', 'POST'])

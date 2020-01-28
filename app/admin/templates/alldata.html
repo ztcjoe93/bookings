@@ -1,23 +1,28 @@
 {% extends "adm_base.html" %}
 
 {% block content %}
-<div class="w-75 mx-auto">
-	{% for datapack in data_set %}
-		<h2>{{ datapack[0].__tablename__.upper() }}</h2>
-		<table class="table">
-			<tr>
-				{% for attr in datapack[0].__table__.columns %}
-					<th>{{ attr.key }}</th>
-				{% endfor %}
-			</tr>
-		{% for data in datapack %}
-			<tr>	
-				{% for attr in data.__table__.columns.keys() %}
-					<td>{{ data[attr] }}</td>
-				{% endfor %}
-			</tr>
-		{% endfor %}
-		</table>
-	{% endfor %}
+<div class="mx-auto">
+	<table class="table table-borderless">
+		<tr>
+			<th>
+				<h2>Users</h2>
+				<a href="{{ url_for('admin_panel.alldata_stype', sub_type='users') }}"><img src="/static/alldata_users.jpg"></a>
+			</th>
+			<th>
+				<h2>Bookings</h2>
+				<a href="{{ url_for('admin_panel.alldata_stype', sub_type='bookings') }}"><img src="/static/poring.jpg"></a>
+			</th>
+		</tr>
+		<tr>
+			<th>
+				<h2>Events</h2>
+				<a href="{{ url_for('admin_panel.alldata_stype', sub_type='events') }}"><img src="/static/alldata_events.jpg"></a>	
+			</th>
+			<th>
+				<h2>Locations</h2>
+				<a href="{{ url_for('admin_panel.alldata_stype', sub_type='locations') }}"><img src="/static/riku.png"></a>
+			</th>
+		</tr>
+	</table>
 </div>
 {% endblock %}

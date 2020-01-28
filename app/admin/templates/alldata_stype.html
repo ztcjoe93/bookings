@@ -1,0 +1,31 @@
+{% extends "adm_base.html" %}
+
+{% block content %}
+<h2>{{sub_type.upper()}}</h2>
+
+<div class="mx-auto">
+{%if data%}
+<table class="table">
+	<tbody>
+	<tr>
+		{%for attr in data[0].__table__.columns%}
+		<th>{{attr.key}}</th>
+		{%endfor%}
+	</tr>
+	{%for d in data%}
+	<tr>
+		{%for attr in d.__table__.columns.keys()%}
+		<td>{{d[attr]}}</td>
+		{%endfor%}
+	</tr>
+	{%endfor%}
+	</tbody>
+</table>
+{%else%}
+There is currently no data.
+{%endif%}
+</div>
+
+<a href="{{url_for('admin_panel.alldata')}}" class="btn btn-primary mx-auto mt-5">Return</a>
+
+{% endblock %}

@@ -1,5 +1,6 @@
 from environs import Env
 import os.path
+import redis
 
 env = Env()
 env.read_env()
@@ -26,3 +27,5 @@ MAIL_USE_TLS = True
 MAIL_DEBUG = True
 MAIL_USERNAME = env.str("MAIL_USERNAME")
 MAIL_PASSWORD = env.str("MAIL_PASSWORD")
+
+SESSION_TYPE = 'redis'

@@ -7,7 +7,7 @@ from werkzeug.urls import url_parse
 from werkzeug.utils import secure_filename
 from sqlalchemy import inspect
 from app.models import User, Booking, Event, Location
-from app.forms import EventForm, UpdateForm, UpdateLForm
+from app.forms import EventForm, UpdateForm, UpdateLForm, AdminRemoveForm, LocationForm
 from app.extensions import mail, login_manager, db
 import datetime
 import os
@@ -39,15 +39,21 @@ def main():
 @admin_panel.route('/alldata', methods=['GET', 'POST'])
 @login_required
 def alldata():
-    users = User.query.all()
-    bookings = Booking.query.all()
-    events = Event.query.all()
-    locations = Location.query.all()
+    return render_template('/alldata.html') if validation(current_user)==True else redirect(url_for('main_panel.index'))
 
-    data_set = [users, bookings, events, locations]
+@admin_panel.route('/alldata/<string:sub_type>', methods=['GET', 'POST'])
+@login_required
+def alldata_stype(sub_type):
+    if sub_type == 'users':
+        data = User.query.all()
+    elif sub_type == 'bookings':
+        data = Booking.query.all()
+    elif sub_type == 'events':
+        data = Event.query.all()
+    elif sub_type == 'locations':
+        data = Location.query.all()
 
-    return render_template('/alldata.html', data_set=data_set) if validation(current_user)==True else redirect(url_for('main_panel.index'))
-
+    return render_template('alldata_stype.html', sub_type=sub_type, data=data)
 
 @admin_panel.route('/event_create', methods=['GET', 'POST'])
 @login_required
@@ -62,7 +68,8 @@ def event_create():
                 start=form.start_date.data,
                 end=form.end_date.data,
                 location_id=form.location.data,
-                img_name=form.img_name.data.filename)
+                img_name=form.img_name.data.filename,
+                description=form.description.data)
        
         file = form.img_name.data
 
@@ -72,28 +79,41 @@ def event_create():
 
         db.session.add(event)
         db.session.commit()
-        return redirect(url_for('admin_panel.main'))
+        return redirect(url_for('admin_panel.alldata_stype', sub_type='events'))
 
     return render_template('/event_create.html', form=form) if validation(current_user)==True else redirect(url_for('main_panel.index'))
 
 
 @admin_panel.route('/location_create', methods=['GET', 'POST'])
 def location_create():
-    if request.method=='POST':
-        db.session.add(Location(name=request.form.get("loc_name"),
-                                address=request.form.get("address")))
-        db.session.commit()
-        flash("Successfully created Location: {}".format(request.form.get("loc_name")))
-        return redirect(url_for('admin_panel.main'))
-    
-    return render_template('/location_create.html') if validation(current_user)==True else redirect(url_for('main_panel.index'))
 
+    form = LocationForm()
+    if form.validate_on_submit():
+        db.session.add(Location(name=form.name.data, address=form.address.data))
+        db.session.commit()
+        flash("Successfully created Location: {}".format(form.name.data), 'info')
+        return redirect(url_for('admin_panel.alldata_stype', sub_type='locations'))
+    
+    return render_template('/location_create.html', form=form) if validation(current_user)==True else redirect(url_for('main_panel.index'))
 
 @admin_panel.route('/event_modify', methods=['GET', 'POST'])
 def event_modify():
-    events = Event.query.all()
+    data = Event.query.all()
 
-    return render_template('/event_modify.html', events=events) if validation(current_user)==True else redirect(url_for('main_panel.index'))
+    form = AdminRemoveForm()
+    form.model_type.data = "event"
+
+    if form.validate_on_submit():
+        #check for existing bookings
+        if Booking.query.filter(Event.id==form.event_id.data).first() != None:
+            flash("existing records, please delete before removal", "error")
+        else:
+            Event.query.filter(Event.id==form.event_id.data).delete()
+            db.session.commit()
+
+        return redirect(url_for('admin_panel.event_modify'))
+
+    return render_template('/modify.html', data=data, form=form) if validation(current_user)==True else redirect(url_for('main_panel.index'))
 
 
 @admin_panel.route('/event_modify/<int:event_id>', methods=['GET', 'POST'])
@@ -144,11 +164,23 @@ def event_mod(event_id):
     return render_template('event_modify_id.html', form=form, event=event, locations=locations) if validation(current_user)==True else redirect(url_for('main_panel.index'))
 
 
-@admin_panel.route('/location_modify', methods=['GET'])
+@admin_panel.route('/location_modify', methods=['GET', 'POST'])
 def location_modify():
-    locations = Location.query.all()
-            
-    return render_template('/location_modify.html', locations=locations) if validation(current_user)==True else redirect(url_for('main_panel.index'))
+    data = Location.query.all()
+
+    form = AdminRemoveForm()
+    form.model_type.data = "location"
+
+    if form.validate_on_submit():
+        if Event.query.filter(Event.location_id==form.location_id.data).first() != None:
+            flash("existing records, please delete before removal", "error")
+        else:
+            Location.query.filter(Location.id==form.location_id.data).delete()
+            db.session.commit()
+        
+        return redirect(url_for('admin_panel.location_modify'))
+
+    return render_template('/modify.html', data=data, form=form) if validation(current_user)==True else redirect(url_for('main_panel.index'))
 
 
 @admin_panel.route('/location_modify/<int:location_id>', methods=['GET', 'POST'])

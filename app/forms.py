@@ -3,7 +3,7 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, Integ
 from wtforms.validators import DataRequired, Email, EqualTo, InputRequired, ValidationError, NumberRange, Optional
 from app.models import db, User, Booking, Event, Location
 from wtforms.fields.html5 import DateField, DateTimeLocalField
-from wtforms.widgets import HiddenInput
+from wtforms.widgets import HiddenInput, TextArea
 import datetime
 
 class LoginForm(FlaskForm):
@@ -37,6 +37,7 @@ class EventForm(FlaskForm):
     end_date = DateTimeLocalField('End Date', format='%Y-%m-%dT%H:%M', validators=[DataRequired()])
     location = SelectField('Location', choices=[], coerce=int)
     img_name = FileField('File') 
+    description = StringField('Description', widget=TextArea(), validators=[Optional()])
     submit = SubmitField('Create')
 
     def validate_name(self, name):
@@ -44,9 +45,19 @@ class EventForm(FlaskForm):
         if valid is not None:
             raise ValidationError('Event with name exists.')
 
+class LocationForm(FlaskForm):
+    name = StringField('Location Name', [InputRequired()])
+    address = StringField('Address Name', widget=TextArea(), validators=[Optional()])
+    submit = SubmitField('Create')
+
 class BookingForm(FlaskForm):
     amount = IntegerField('Number of Tickets', [DataRequired()])
     submit = SubmitField('Book now')
+
+class AdminRemoveForm(FlaskForm):
+    model_type = HiddenField()
+    event_id = HiddenField(validators=[Optional()])
+    location_id = HiddenField(validators=[Optional()])
 
 class RemoveForm(FlaskForm):
     book_id = HiddenField()
