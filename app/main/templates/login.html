@@ -6,36 +6,42 @@
 	<h1>Login Page</h1>
 	<form action="" method="post" novalidate>
 		{{ form.hidden_tag() }}
-		{{ form.username.label }}
-		{{ form.username(size=32, class="form-control", id="form_user") }}
+		<p>
+			{{ form.username.label }}
+			{{ form.username(size=32, class="form-control") }}
+		</p>
 
-	{% for error in form.username.errors %}
-		<div class="alert alert-danger alert-dismissible fade show col-md-auto text-left" role="alert">
-		{{ error }}
-		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-		</button>
+		{% for error in form.username.errors %}
+			<div class="alert alert-danger alert-dismissible fade show col-md-auto text-left" role="alert">
+				{{ error }}
+			</div>
+		{% endfor %}
+
+		<p>
+			{{ form.password.label }}
+			{{ form.password(size=32, class="form-control") }}
+		</p>
+
+		{% for error in form.password.errors %}
+			<div class="alert alert-danger alert-dismissible fade show col-md-auto text-left" role="alert">
+				{{ error }}
+			</div>
+		{% endfor %} 
+
+		<p>
+		<div class="custom-control custom-switch">
+			<input type="checkbox" class="custom-control-input" id="remember">
+			<label class="custom-control-label" for="remember">Remember Me</label>
 		</div>
-	{% endfor %}
-	{{ form.password.label }}
-	{{ form.password(size=32, class="form-control") }}
-
-	{% for error in form.password.errors %}
-		<div class="alert alert-danger alert-dismissible fade show col-md-auto text-left" role="alert">
-		{{ error }}
-	 	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-	 	</button>
-		</div>
-	{% endfor %} 
-
-	<div class="custom-control custom-switch">
-		<input type="checkbox" class="custom-control-input" id="remember">
-		<label class="custom-control-label" for="remember">Remember Me</label>
-	</div>
-	<button type="submit" class="btn btn-primary">Login</button>
+		</p>
+		
+		<p>
+			{{form.submit(class="btn btn-primary")}}	
+		</p>
 	</form>
-	<p>
-   	<a href="{{ url_for('main_panel.register') }}">Register</a>
-   	<a href="{{ url_for('main_panel.reset') }}">Forgot password</a>
+	<p class="my-5">
+		<a class="mr-2" href="{{ url_for('main_panel.register') }}">Register</a>
+		<a class="ml-2" href="{{ url_for('main_panel.reset') }}">Forgot Password</a>
 	</p>
 </div>
 {% endblock %}

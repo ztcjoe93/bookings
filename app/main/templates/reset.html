@@ -1,10 +1,11 @@
 {% extends "base.html" %}
+
 {% block content %}
+<h2 class="pb-5">Forget Password</h2>
 <form method="post" action="">
 	{{ form.hidden_tag() }}
-	<h1>Forget password</h1>
 	{{ form.email.label }}<br>
 	{{ form.email }}<br>
-	{{ form.submit }}
+	{{ form.submit(class="btn btn-primary my-4") }}
 </form>
 {% endblock %}

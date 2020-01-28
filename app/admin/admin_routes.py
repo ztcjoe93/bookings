@@ -53,6 +53,17 @@ def alldata_stype(sub_type):
     elif sub_type == 'locations':
         data = Location.query.all()
 
+    if request.method == 'POST':
+        user = User.query.filter(User.id==request.form['idValue']).first()
+        print(user.username)
+        if request.form['modType'] == "revoke": 
+            user.su_rights = False 
+        else: 
+            user.su_rights = True
+        db.session.commit()
+
+        return redirect(url_for('admin_panel.alldata_stype', sub_type='users'))
+
     return render_template('alldata_stype.html', sub_type=sub_type, data=data)
 
 @admin_panel.route('/event_create', methods=['GET', 'POST'])

@@ -8,6 +8,7 @@ from app.extensions import mail
 from werkzeug.security import generate_password_hash
 from werkzeug.urls import url_parse
 from datetime import datetime
+from itsdangerous import URLSafeTimedSerializer
 import os.path
 
 #blueprint setup

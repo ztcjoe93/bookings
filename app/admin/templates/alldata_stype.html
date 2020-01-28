@@ -1,26 +1,55 @@
 {% extends "adm_base.html" %}
 
 {% block content %}
-<h2>{{sub_type.upper()}}</h2>
+<script>
+function modifyUser(user, type){
+	action = '';
+	if(type == 'upgrade'){
+		action = 'upgrade';
+	}
+	else if(type == 'revoke'){
+		action = 'revoke'
+	}
 
+	if(confirm("Are you sure you wish to "+action+" this user?")){
+		let form = document.getElementById("theForm");
+		form['idValue'].value = user;
+		form['modType'].value = type;
+		form.submit();
+	}
+}
+</script>
+<h2>{{sub_type.upper()}}</h2>
 <div class="mx-auto">
 {%if data%}
+<form id="theForm" method="post" action="" novalidate>	
+<input type="hidden" name="csrf_token" value="{{csrf_token()}}" />
 <table class="table">
 	<tbody>
 	<tr>
 		{%for attr in data[0].__table__.columns%}
 		<th>{{attr.key}}</th>
 		{%endfor%}
+		{%if current_user.su_rights==True and sub_type=="users"%}
+		<th colspan="2">options</th>
+		{%endif%}
 	</tr>
 	{%for d in data%}
 	<tr>
 		{%for attr in d.__table__.columns.keys()%}
 		<td>{{d[attr]}}</td>
 		{%endfor%}
+		{%if current_user.su_rights==True and sub_type=="users"%}
+		<td><button type="button" class="btn btn-success" onclick="modifyUser({{d['id']}}, 'upgrade')" {%if d['su_rights']==True%}disabled{%endif%}>Upgrade</button></td>
+		<td><button type="button" class="btn btn-danger" onclick="modifyUser({{d['id']}}, 'revoke')" {%if d['su_rights']==False%}disabled{%endif%}>Revoke</button></td>
+		{%endif%}
 	</tr>
 	{%endfor%}
+	<input type="text" name="idValue" id="idValue" value="" hidden />
+	<input type="text" name="modType" id="modType" value="" hidden/>
 	</tbody>
 </table>
+</form>
 {%else%}
 There is currently no data.
 {%endif%}

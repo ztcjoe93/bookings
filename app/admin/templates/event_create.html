@@ -42,13 +42,11 @@
 		</tr>
 		<tr>
 			<td colspan="2">
-				<div class="alert alert-danger" role="alert">
-					{% for error in form.name.errors %}Name: {{ error }}<br>{% endfor %}
-					{% for error in form.capacity.errors %}Capacity: {{ error }}<br>{% endfor %}
-					{% for error in form.start_date.errors %}Start Date: {{ error }}<br>{% endfor %}
-					{% for error in form.end_date.errors %}End Date: {{ error }}<br>{% endfor %}
+				{% for error in form.name.errors %}Name: {{ error }}<br>{% endfor %}
+				{% for error in form.capacity.errors %}Capacity: {{ error }}<br>{% endfor %}
+				{% for error in form.start_date.errors %}Start Date: {{ error }}<br>{% endfor %}
+				{% for error in form.end_date.errors %}End Date: {{ error }}<br>{% endfor %}
 				{% for error in form.location.errors %}Location: {{ error }}{% endfor %}
-				</div>
 			</td>
 		</tr>
 		</tbody>

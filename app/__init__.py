@@ -10,7 +10,8 @@ from app.extensions import (
 	login_manager,
 	db,
 	migrate,
-        mail
+        mail,
+        csrf
 )
 
 def create_app(config_object="app.settings"):
@@ -30,6 +31,7 @@ def register_extensions(app):
     login_manager.init_app(app)
     migrate.init_app(app, db)
     mail.init_app(app)
+    csrf.init_app(app)
 
     return None
 
