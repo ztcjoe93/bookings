@@ -1,11 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2 class="pb-5">Forget Password</h2>
-<form method="post" action="">
-	{{ form.hidden_tag() }}
-	{{ form.email.label }}<br>
-	{{ form.email }}<br>
-	{{ form.submit(class="btn btn-primary my-4") }}
-</form>
+<style>
+	body {
+		background-image: url("/static/fireworks.png");
+	}
+</style>
+<div class="d-flex flex-column justify-content-center align-items-center container w-25 py-5" style="background-color:rgba(255,255,255,0.2);">
+	<h1 class="pb-5">Forget Password</h1>
+	<form class="container" method="post" action="">
+		<input type="hidden" name="csrf_token" value="{{csrf_token()}}"/>
+		{{ form.email.label }}<br>
+		{{ form.email(class="form-control") }}<br>
+		{{ form.submit(class="btn btn-dark my-4") }}
+	</form>
+</div>
 {% endblock %}

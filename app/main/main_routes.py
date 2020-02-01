@@ -9,6 +9,7 @@ from werkzeug.security import generate_password_hash
 from werkzeug.urls import url_parse
 from datetime import datetime
 from itsdangerous import URLSafeTimedSerializer
+from threading import Thread
 import os.path
 
 #blueprint setup
@@ -36,7 +37,7 @@ def events():
 
 @main_panel.route('/events/<int:event_id>', methods=['GET', 'POST'])
 def load_event(event_id):
-    data = db.session.query(Event, Location).filter(Event.id==event_id).first()
+    data = db.session.query(Event).join(Location, Location.id==Event.location_id).with_entities(Event.id, Event.name, Event.capacity, Event.start, Event.end, Location.name.label('location_name'), Location.address, Event.img_name, Event.description).filter(Event.id==event_id).first()
     if data is None:
         return render_template('error_event.html')
     return render_template('event_id.html', event_id=event_id, data=data)
@@ -69,8 +70,12 @@ def mybookings():
 @main_panel.route('/book/<int:event_id>', methods=['GET', 'POST'])
 @login_required
 def book(event_id):
-    data = db.session.query(Event, Location).filter(Event.id==event_id).first()
+    data = db.session.query(Event).join(Location, Location.id==Event.location_id).with_entities(Event.name, Event.capacity, Event.start, Event.end, Location.name.label('location_name'), Location.address, Event.img_name).filter(Event.id==event_id).first()
+
+    ticket_amt = [(i,i+1) for i in range(data.capacity)]
     form = BookingForm()
+    form.amount.choices = ticket_amt
+
     if data is None:
         return render_template('error_event.html')
     if form.validate_on_submit():
@@ -83,7 +88,7 @@ def book(event_id):
         db.session.add(booking)
         db.session.commit()
         app.logger.info('[User ID {} has booked {} tickets for Event ID {}.]'.format(booking.user_id, booking.quantity, booking.event_id))
-        flash('Successfully purchased {} tickets for {}'.format(form.amount.data, data.Event.name), "info") 
+        flash('Successfully purchased {} tickets for {}'.format(form.amount.data, data.name), "info") 
         return redirect(url_for('main_panel.events'))
     return render_template('book.html', event_id=event_id, data=data, form=form)
 
@@ -92,19 +97,26 @@ def login():
     if current_user.is_authenticated:
         return redirect(url_for('main_panel.index'))
     form = LoginForm()
+
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_pwd(form.password.data):
             flash('Wrong username/password', 'error')
             return redirect(url_for('main_panel.login'))
-        login_user(user, remember=form.remember.data)
-        next_page = request.args.get('next')
-        if not next_page or url_parse(next_page).netloc != '':
-            app.logger.info('[User {} has logged in.]'.format(user.username))
-            flash('Successfully logged in!', 'info')
-            return redirect(url_for('main_panel.index'))
+
+        if user.verification == True:
+            login_user(user, remember=form.remember.data)
+            next_page = request.args.get('next')
+            if not next_page or url_parse(next_page).netloc != '':
+                app.logger.info('[User {} has logged in.]'.format(user.username))
+                flash('Successfully logged in!', 'info')
+                return redirect(url_for('main_panel.index'))
+            else:
+                return redirect(next_page)
         else:
-            return redirect(next_page)
+            flash("Account not verified yet, please check your email.", "error")
+            return redirect(url_for('main_panel.login'))
+
     return render_template('login.html', form=form)
 
 @main_panel.route('/logout')
@@ -117,16 +129,46 @@ def logout():
 @main_panel.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
+    ts = URLSafeTimedSerializer(app.config['SECRET_KEY'])
     if form.validate_on_submit():
         user = User(username=form.username.data,
                     email=form.email.data)
         user.set_pwd(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash("Your account has been successfully created at {}".format(user.username, datetime.utcnow()), "info")
+        token = ts.dumps(user.email, salt='verify-email')
+        verify_url = url_for('main_panel.verify', token=token, _external=True)
+
+        html = render_template('email_verify.html', verify_url=verify_url)
+        msg = Message(subject="Email verification for {}".format(user.username),
+                    sender=app.config.get("MAIL_USERNAME"),
+                    recipients=[user.email],
+                    html=html)
+
+        Thread(target=send_email, args=(app._get_current_object(), msg)).start()
+
+        flash("A verification email has been sent, kindly check your email.", "info")
         app.logger.info('[User {} has been newly registered.]'.format(user.username)) 
         return redirect(url_for('main_panel.login'))
     return render_template('register.html', form=form)
+
+@main_panel.route('/verify/<token>', methods=['GET', 'POST'])
+def verify(token): 
+    ts = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    email = ts.loads(token, salt="verify-email", max_age=86400) 
+
+    user = User.query.filter_by(email=email).first()
+    user.verification = True
+    db.session.commit()
+
+    flash("Account successfully verified.", "info") 
+
+    return render_template('verify.html')
+
+
+def send_email(app, msg):
+    with app.app_context():
+        mail.send(msg)
 
 @main_panel.route('/reset', methods=['GET', 'POST'])
 def reset():
@@ -136,13 +178,15 @@ def reset():
         user = User.query.filter_by(email=request.form['email']).first()
         if user is not None:
             token = ts.dumps(user.email, salt='recover-pw')
-            recover_url = url_for('main_panel.reset_token', token=token)
+            recover_url = url_for('main_panel.reset_token', token=token, _external=True)
             html = render_template('email_pw_reset.html', recover_url=recover_url)
-            msg = Message(subject="Password reset request for NZR",
+            msg = Message(subject="Password Reset request for {}".format(user.username),
                         sender=app.config.get("MAIL_USERNAME"),
                         recipients=[user.email],
                         html=html)
-            mail.send(msg) 
+
+            Thread(target=send_email, args=(app._get_current_object(), msg)).start()
+
         flash("Password reset requested, kindly check your email.", "info") 
         return redirect(url_for('main_panel.login'))
     return render_template('reset.html', form=form)
@@ -159,4 +203,4 @@ def reset_token(token):
         db.session.commit()
         return redirect(url_for('main_panel.login'))
 
-    return render_template('reset_token.html', form=form, token=token)
+    return render_template('reset_token.html', form=form, token=token, email=email)

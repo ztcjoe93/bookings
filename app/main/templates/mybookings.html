@@ -23,24 +23,34 @@ function md(book_id, event_id, qt){
 	}
 }
 </script>
+<style>
+	body {
+		background-image:url("/static/lib.jpg");
+	}
+</style>
+<div class="text-white container">
+<h1>My Bookings</h1>
 {% if bookings %}
+<table class="table table-light table-bordered">
 <form id="modification" action="" method="post">
 {{ form.hidden_tag() }}
-<table style="border:1px solid black;">
-	<tr>
-		<th>No.</th>
-		<th>Event</th>
-		<th>Quantity</th>
-		<th>Modified Quantity</th>
-	</tr>
+	<thead class="thead-dark">
+		<tr>
+			<th>No.</th>
+			<th>Event</th>
+			<th>Quantity</th>
+			<th colspan="4">Modified Quantity</th>
+		</tr>
+	</thead>
+	<tbody>
 	{% for booking in bookings %}
 		<tr>
 			<td>{{ loop.index }}</td>
 			<td><a href="{{ url_for('main_panel.load_event', event_id=booking.event_id) }}">{{ booking.name }}</a></td>
 			<td>{{ booking.quantity }}</td>
-			<td>{{ form.md_qt }}</td>
-			<td><a onclick="md({{ booking.id }}, {{ booking.event_id }}, {{ booking.quantity }})" style="color:blue;text-decoration:underline;">&#9632;</a></td>
-			<td><a onclick="cf({{ booking.id }}, {{ booking.event_id }}, {{ booking.quantity }})" style="color:red;text-decoration:underline;">&times;</a></td>
+			<td>{{ form.md_qt(class='form-control') }}</td>
+			<td><button class="btn btn-primary" onclick="md({{ booking.id }}, {{ booking.event_id }}, {{ booking.quantity }})">Modify</button></td>
+			<td><button class="btn btn-danger" onclick="cf({{ booking.id }}, {{ booking.event_id }}, {{ booking.quantity }})">Cancel</td>
 			<td>
 				{% for error in form.md_qt.errors %}
 				{{ error }}
@@ -49,9 +59,11 @@ function md(book_id, event_id, qt){
 		</tr>
 		<input type="submit" disabled style="display: none">
 	{% endfor %}
+	</tbody>
 </form>
 </table>
 {% else %}
-	<h3>You have no bookings currently.</h3>
+	<h3 class="mt-5">You have no bookings currently.</h3>
 {% endif %}
+</div>
 {% endblock %}

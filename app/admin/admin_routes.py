@@ -208,7 +208,7 @@ def location_mod(location_id):
 
     return render_template('/location_modify_id.html', form=form, location=location) if validation(current_user)==True else redirect(url_for('main_panel.index'))
 
-
+'''
 @admin_panel.route('/message', methods=['GET', 'POST'])
 def message():
     if request.method == 'POST':
@@ -221,4 +221,4 @@ def message():
         mail.send(msg)
 
     return render_template('message.html') if validation(current_user)==True else redirect(url_for('main_panel.index'))
-
+'''

@@ -1,14 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="d-flex flex-column justify-content-center align-items-center container">
-	<img src="/static/key.jpg" alt="login_page">
-	<h1>Login Page</h1>
+<style>
+	body {
+		background-image: url("/static/fireworks.png");
+	}
+</style>
+<div class="d-flex flex-column justify-content-center align-items-center container w-25 pt-5" style="background-color:rgba(255,255,255,0.2);">
+	<h1 class="pb-5">Login Page</h1>
 	<form action="" method="post" novalidate>
 		{{ form.hidden_tag() }}
 		<p>
-			{{ form.username.label }}
-			{{ form.username(size=32, class="form-control") }}
+			{{ form.username(size=32, class="form-control", placeholder="Username") }}
+			{{ form.password(size=32, class="form-control", placeholder="Password") }}
 		</p>
 
 		{% for error in form.username.errors %}
@@ -16,11 +20,6 @@
 				{{ error }}
 			</div>
 		{% endfor %}
-
-		<p>
-			{{ form.password.label }}
-			{{ form.password(size=32, class="form-control") }}
-		</p>
 
 		{% for error in form.password.errors %}
 			<div class="alert alert-danger alert-dismissible fade show col-md-auto text-left" role="alert">
@@ -31,17 +30,17 @@
 		<p>
 		<div class="custom-control custom-switch">
 			<input type="checkbox" class="custom-control-input" id="remember">
-			<label class="custom-control-label" for="remember">Remember Me</label>
+			<label class="custom-control-label text-white" for="remember">Remember Me</label>
 		</div>
 		</p>
 		
 		<p>
-			{{form.submit(class="btn btn-primary")}}	
+			{{form.submit(class="btn btn-dark")}}	
 		</p>
 	</form>
 	<p class="my-5">
-		<a class="mr-2" href="{{ url_for('main_panel.register') }}">Register</a>
-		<a class="ml-2" href="{{ url_for('main_panel.reset') }}">Forgot Password</a>
+		<a class="mr-2 text-white" href="{{ url_for('main_panel.register') }}">Register</a>
+		<a class="ml-2 text-white" href="{{ url_for('main_panel.reset') }}">Forgot Password</a>
 	</p>
 </div>
 {% endblock %}

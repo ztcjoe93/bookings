@@ -23,6 +23,7 @@ class User(UserMixin, db.Model):
     pwd_hash = db.Column(db.String(128))
     bookings = db.relationship("Booking", backref="users")
     su_rights = db.Column(db.Boolean, default=False, nullable=False)
+    verification = db.Column(db.Boolean, default=False)
 
     def set_pwd(self, password):
             self.pwd_hash = generate_password_hash(password)

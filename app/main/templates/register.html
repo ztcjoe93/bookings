@@ -1,53 +1,60 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="d-flex flex-column mx-auto">
-	<h1>Registration Page</h1><br>
-	<form action="" method="post">
-		{{ form.hidden_tag() }}
-		<p class="text-left">
-			{{ form.username.label(class="ml-3") }}<br>
-			{{ form.username(size=32, class="form-control") }}
-		{% for error in form.username.errors %}
-		<div class="alert alert-danger alert-dismissible fade show col-md-auto" role="alert">
-			{{ error }}
-		</div>
-		{% endfor %}
-		</p>
+<style>
+	body {
+		background-image: url("/static/fireworks.png");
+	}
+</style>
+<div class="d-flex flex-column justify-content-center align-items-center container w-25 py-5" style="background-color:rgba(255,255,255,0.2);">
+	<div class="d-flex flex-column mx-auto">
+		<h1>Registration Page</h1><br>
+		<form action="" method="post">
+			{{ form.hidden_tag() }}
+			<p class="text-left">
+				{{ form.username.label(class="ml-2") }}<br>
+				{{ form.username(size=32, class="form-control") }}
+			{% for error in form.username.errors %}
+			<div class="alert alert-danger alert-dismissible fade show col-md-auto" role="alert">
+				{{ error }}
+			</div>
+			{% endfor %}
+			</p>
 
-		<p class="text-left">
-			{{ form.email.label(class="ml-3") }}<br>
-			{{ form.email(size=32, class="form-control") }}
-		{% for error in form.email.errors %}
-		<div class="alert alert-danger alert-dismissible fade show col-md-auto" role="alert">
-			{{ error }}
-		</div>
-		{% endfor %}
-		</p>
+			<p class="text-left">
+				{{ form.email.label(class="ml-2") }}<br>
+				{{ form.email(size=32, class="form-control") }}
+			{% for error in form.email.errors %}
+			<div class="alert alert-danger alert-dismissible fade show col-md-auto" role="alert">
+				{{ error }}
+			</div>
+			{% endfor %}
+			</p>
 
-		<p class="text-left">
-			{{ form.password.label(class="ml-3") }}<br>
-			{{ form.password(size=32, class="form-control") }}
-		{% for error in form.password.errors %}
-		<div class="alert alert-danger alert-dismissible fade show col-md-auto" role="alert">
-			{{ error }}
-		</div>
-		{% endfor %}
-		</p>
+			<p class="text-left">
+				{{ form.password.label(class="ml-2") }}<br>
+				{{ form.password(size=32, class="form-control") }}
+			{% for error in form.password.errors %}
+			<div class="alert alert-danger alert-dismissible fade show col-md-auto" role="alert">
+				{{ error }}
+			</div>
+			{% endfor %}
+			</p>
 
-		<p class="text-left">
-			{{ form.password_re.label(class="ml-3")}}<br>
-			{{ form.password_re(size=32, class="form-control", id="form_password_re") }}
-		{% for error in form.password_re.errors %}
-		<div class="alert alert-danger alert-dismissible fade show col-md-auto" role="alert">
-			{{ error }}
-		</div>
-		{% endfor %}
-		</p>
+			<p class="text-left">
+				{{ form.password_re.label(class="ml-2")}}<br>
+				{{ form.password_re(size=32, class="form-control", id="form_password_re") }}
+			{% for error in form.password_re.errors %}
+			<div class="alert alert-danger alert-dismissible fade show col-md-auto" role="alert">
+				{{ error }}
+			</div>
+			{% endfor %}
+			</p>
 
-		{{ form.recaptcha }}<br>
-		{{ form.submit(class="btn btn-primary") }}
-	</form>
+			{{ form.recaptcha }}<br>
+			{{ form.submit(class="btn btn-light") }}
+		</form>
+	</div>
 </div>
 
 {% endblock %}

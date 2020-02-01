@@ -1,9 +1,19 @@
 {% extends "base.html" %}
+
 {% block content %}
-<form method="post" action="">
-	{{ form.hidden_tag() }}
-	{{ form.password.label }} : {{ form.password }}<br>
-	{{ form.password_re.label }} : {{ form.password_re }}<br>
-	{{ form.submit }}
-</form>
+<style>
+	body {
+		background-image: url("/static/fireworks.png");
+	}
+</style>
+<div class="d-flex flex-column justify-content-center align-items-center container w-25 py-5" style="background-color:rgba(255,255,255,0.2);">
+	<h1 class="pb-5">Password Reset</h1>
+	<form method="post" action="">
+		<input type="hidden" name="csrf_token" value="{{csrf_token()}}"/>
+		Password reset request for {{email}}<br>
+		{{ form.password(class="form-control", placeholder="New Password") }}
+		{{ form.password_re(class="form-control", placeholder="Re-enter Password") }}<br>
+		{{ form.submit(class="btn btn-dark") }}
+	</form>
+</div>
 {% endblock %}

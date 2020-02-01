@@ -51,7 +51,7 @@ class LocationForm(FlaskForm):
     submit = SubmitField('Create')
 
 class BookingForm(FlaskForm):
-    amount = IntegerField('Number of Tickets', [DataRequired()])
+    amount = SelectField('Number of Tickets', choices=[], coerce=int)
     submit = SubmitField('Book now')
 
 class AdminRemoveForm(FlaskForm):
