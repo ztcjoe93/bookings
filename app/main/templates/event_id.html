@@ -8,7 +8,7 @@
 </style>
 <div class="d-flex flex-column justify-content-center mx-auto">
 	{% if data.img_name %}
-	<img src="{{ url_for('main_panel.download_file', filename='') }}{{data.img_name}}"></img>
+	<img src="{{ url_for('main_panel.download_file', filename='') }}{{ data.img_name.replace(' ', '_') }}"></img>
 	{% endif %}
 	<table class="table table-sm table-dark table-bordered w-100">
 		<tbody>
@@ -34,6 +34,6 @@
 		</tr>
 		</tbody>
 	</table>
-	<a class="btn btn-primary mx-auto mt-5" href="{{ url_for('main_panel.book', event_id=event_id) }}">Book</a>
+	<a class="btn btn-primary mx-auto" href="{{ url_for('main_panel.book', event_id=event_id) }}">Book</a>
 </div>
 {% endblock %}

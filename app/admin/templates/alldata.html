@@ -1,26 +1,33 @@
 {% extends "adm_base.html" %}
 
 {% block content %}
-<div class="mx-auto">
-	<table class="table table-borderless">
+<style>
+	body {
+		background-image:url('/static/binary.jpg');
+	}
+</style>
+<div class="card mx-auto" style="border:1px solid cyan;">
+	<table class="table table-light table-bordered mb-0">
+		<thead>
 		<tr>
-			<th>
+			<th style="border-bottom:3px solid grey !important;border-right:3px solid grey !important">
 				<h2>Users</h2>
-				<a href="{{ url_for('admin_panel.alldata_stype', sub_type='users') }}"><img src="/static/alldata_users.jpg"></a>
+				<a href="{{ url_for('admin_panel.alldata_stype', sub_type='users') }}"><img src="/static/users.png"></a>
 			</th>
-			<th>
+			<th style="border-bottom:3px solid grey !important;border-left:3px solid grey !important">
 				<h2>Bookings</h2>
-				<a href="{{ url_for('admin_panel.alldata_stype', sub_type='bookings') }}"><img src="/static/poring.jpg"></a>
+				<a href="{{ url_for('admin_panel.alldata_stype', sub_type='bookings') }}"><img src="/static/bookings.jpg"></a>
 			</th>
 		</tr>
+		</thead>
 		<tr>
-			<th>
+			<th style="border-top:3px solid grey !important;border-right:3px solid grey !important">
 				<h2>Events</h2>
-				<a href="{{ url_for('admin_panel.alldata_stype', sub_type='events') }}"><img src="/static/alldata_events.jpg"></a>	
+				<a href="{{ url_for('admin_panel.alldata_stype', sub_type='events') }}"><img src="/static/events.jpeg"></a>	
 			</th>
-			<th>
+			<th style="border-top:3px solid grey !important;border-left:3px solid grey !important">
 				<h2>Locations</h2>
-				<a href="{{ url_for('admin_panel.alldata_stype', sub_type='locations') }}"><img src="/static/riku.png"></a>
+				<a href="{{ url_for('admin_panel.alldata_stype', sub_type='locations') }}"><img src="/static/locations.png"></a>
 			</th>
 		</tr>
 	</table>

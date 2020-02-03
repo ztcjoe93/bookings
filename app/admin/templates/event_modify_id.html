@@ -1,13 +1,16 @@
 {% extends "adm_base.html" %}
 
 {% block content %}
+<script>		
+</script>
+<div class="mx-auto container">
 <form method="post" action="" enctype="multipart/form-data">
 {{ form.hidden_tag() }}
-<table>
+<table class="table table-striped table-light table-bordered">
 	<tr>
-		<th>Data Type</th>
-		<th>Current Value</th>
-		<th>Update Value</th>
+		<th class="table-dark">Data Type</th>
+		<th class="table-dark">Current Value</th>
+		<th class="table-dark">Update Value</th>
 	</tr>
 	<tr>
 		<td>Event Id</td>
@@ -16,10 +19,7 @@
 	<tr>
 		<td>{{ form.name.label }}</td>
 		<td>{{ event.name }}</td>
-		<td>{{ form.name }}</td>
-		{% for error in form.name.errors %}
-		{{ error }}
-		{% endfor %}
+		<td>{{ form.name(class="form-control") }}</td>
 	</tr>
 	<tr>
 		<td>{{ form.capacity.label }}</td>
@@ -28,40 +28,35 @@
 	<tr>
 		<td>{{ form.max_cap.label }}</td>
 		<td>{{ event.max_capacity }}</td>
-		<td>{{ form.max_cap }}</td>
-		{% for error in form.max_cap.errors %}
-		{{ error }}
-		{% endfor %}
+		<td>{{ form.max_cap(class="form-control") }}</td>
 	</tr>
 	<tr>
 		<td>{{ form.start_date.label }}</td>
 		<td>{{ event.start }}</td>
-		<td>{{ form.start_date }}</td>
-		{% for error in form.start_date.errors %}
-		{{ error }}
-		{% endfor %}
+		<td>{{ form.start_date(class="form-control") }}</td>
 	</tr>
 	<tr>
 		<td>{{ form.end_date.label }}</td>
 		<td>{{ event.end }}</td>
-		<td>{{ form.end_date }}</td>
-		{% for error in form.end_date.errors %}
-		{{ error }}
-		{% endfor %}
+		<td>{{ form.end_date(class="form-control") }}</td>
 	</tr>
 	<tr>
 		<td>Image</td>
 		<td>{{ event.img_name }}</td>
-		<td>{{ form.img_name }}</td>
+		<td>
+			<div class="custom-file">
+				{{ form.img_name(class="custom-file-input") }}
+				<label class="custom-file-label text-left", id="up">Select image to upload...</label>
+			</div>
+		</td>
 	</tr>
 	<tr>
 		<td>Description</td>
 		<td>{{ event.description }}</td>
-		<td>{{ form.description }}</td>
-	</tr>
-	<tr>
-		<td>{{ form.submit(onclick="confirm('Confirm changes?')") }}</td>
+		<td>{{ form.description(class="form-control") }}</td>
 	</tr>
 <table>
+	{{ form.submit(class="btn btn-secondary", onclick="confirm('Confirm changes?')") }}
 </form>
+</div>
 {% endblock %}

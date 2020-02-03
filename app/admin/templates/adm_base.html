@@ -6,15 +6,21 @@
 		<!-- Bootstrap CDN -->
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 		<title>Bookings - Admin</title>
+		<!-- JS dependencies -->
+		<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+		<script src="/static/alert.js"></script>
 	</head>
 	<body>
-		<nav class="navbar navbar-expand-md navbar-light" style="background-color: #D3D3D3;">
+		<nav class="navbar navbar-expand-md navbar-dark" style="background-color: #002171;">
 			<span class="navbar-text text-grey font-weight-bold">
 				<img src="" alt="event_logo">Events Booking - Admin
 			</span>
 			<div class="collapse navbar-collapse d-flex justify-content-between">
 
 				<ul class="navbar-nav l-auto">
+					<li class="nav-item"><a class="nav-link" href="{{url_for('admin_panel.main')}}">Main</a></li>
 					<li class="nav-item"><a class="nav-link" href="{{ url_for('admin_panel.alldata') }}">All Data</a></li>
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" id="create" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Create</a>
@@ -66,14 +72,8 @@
 			</div>
 		</div>
 
-		<footer class="footer mt-auto py-3 fixed-bottom" style="background-color: #D3D3D3;">
+		<footer class="footer mt-auto py-3 fixed-bottom text-white" style="background-color: #002171;">
 			<div class="container ml-4">&copy; 2020</div>
 		</footer>
-
-		<!-- JS dependencies -->
-		<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
-		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-		<script src="/static/alert.js"></script>
 	</body>
 </html>

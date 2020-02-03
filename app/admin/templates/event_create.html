@@ -2,43 +2,44 @@
 
 {% block content %}
 <style>
-	td {
-		padding-top:0.5 !important;
-		padding-bottom:0 !important;
+	body {
+		background-image:url('/static/binary.jpg');
 	}
 </style>
-<div class="mx-auto pb-3 rounded-lg" style="background-color:#e0f7fa">
-<h2 class="mt-3">Event Creation Form</h2>
+<script>
+	$(document).ready(function(){
+		$('input[type="file"]').change(function(e){
+			var fileName = e.target.files[0].name;
+			var theLabel = document.getElementById('up');
+			theLabel.innerHTML = fileName;
+        });
+    });
+</script>
+<div class="mx-auto px-3 pb-3 rounded-lg" style="background-color:#e0f7fa">
+<h2 class="my-3">Event Creation Form</h2>
 <form action="" method="post" enctype="multipart/form-data">
 	{{ form.hidden_tag() }}
-	<table class="table table-borderless w-auto mx-auto mt-5">
+	<table class="table table-borderless mx-auto">
 		<tbody>
 		<tr>
-			<td>{{ form.name.label }}</td>
-			<td>{{ form.capacity.label }}</td>
+			<td>{{ form.name.label }}{{ form.name(class="form-control") }}</td>
+			<td>{{ form.capacity.label }}{{ form.capacity(class="form-control")}}</td>
 		</tr>
 		<tr>
-			<td>{{ form.name(class="form-control") }}</td>
-			<td>{{ form.capacity(class="form-control")}}</td>
+			<td>{{ form.start_date.label }}{{ form.start_date(class="datepicker form-control") }}</td>
+			<td>{{ form.end_date.label}}{{ form.end_date(class="datepicker form-control") }}</td>
 		</tr>
 		<tr>
-			<td>{{ form.start_date.label }}</td>
-			<td>{{ form.end_date.label  }}</td>
+			<td>{{ form.location.label }}{{ form.location(class="form-control") }}</td>
+			<td>{{form.description.label}}{{form.description(class="form-control w-100")}}</td>
 		</tr>
 		<tr>
-			<td>{{ form.start_date(class="datepicker form-control") }}</td>
-			<td>{{ form.end_date(class="datepicker form-control") }}</td>
-		</tr>
-		<tr>
-			<td>{{ form.location.label }}</td>
-			<td>{{form.description.label}}</td>
-		</tr>
-		<tr>
-			<td>{{ form.location(class="form-control") }}</td>
-			<td>{{form.description(class="form-control w-100")}}</td>
-		</tr>
-		<tr>
-			<td colspan="2" class="text-left pt-4">{{ form.img_name }}</td>
+			<td colspan="2">
+				<div class="custom-file">
+					{{ form.img_name(class="custom-file-input") }}
+					<label class="custom-file-label text-left", id="up">Select image to upload...</label>
+				</div>
+			</td>
 		</tr>
 		<tr>
 			<td colspan="2">
@@ -51,7 +52,7 @@
 		</tr>
 		</tbody>
 	</table>
-	{{ form.submit(class="btn btn-primary mt-5") }}
+	{{ form.submit(class="btn btn-info mt-5") }}
 </form>
 </div>
 {% endblock %}

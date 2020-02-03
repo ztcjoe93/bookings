@@ -31,7 +31,7 @@ function md(book_id, event_id, qt){
 <div class="text-white container">
 <h1>My Bookings</h1>
 {% if bookings %}
-<table class="table table-light table-bordered">
+<table class="table table-dark table-bordered">
 <form id="modification" action="" method="post">
 {{ form.hidden_tag() }}
 	<thead class="thead-dark">
@@ -48,14 +48,9 @@ function md(book_id, event_id, qt){
 			<td>{{ loop.index }}</td>
 			<td><a href="{{ url_for('main_panel.load_event', event_id=booking.event_id) }}">{{ booking.name }}</a></td>
 			<td>{{ booking.quantity }}</td>
-			<td>{{ form.md_qt(class='form-control') }}</td>
-			<td><button class="btn btn-primary" onclick="md({{ booking.id }}, {{ booking.event_id }}, {{ booking.quantity }})">Modify</button></td>
-			<td><button class="btn btn-danger" onclick="cf({{ booking.id }}, {{ booking.event_id }}, {{ booking.quantity }})">Cancel</td>
-			<td>
-				{% for error in form.md_qt.errors %}
-				{{ error }}
-				{% endfor %}
-			</td>
+			<td>{{ form.md_qt(class='form-control col-sm-6') }}</td>
+			<td><button class="btn btn-primary w-100" onclick="md({{ booking.id }}, {{ booking.event_id }}, {{ booking.quantity }})">Modify</button></td>
+			<td><button class="btn btn-danger w-100" onclick="cf({{ booking.id }}, {{ booking.event_id }}, {{ booking.quantity }})">Cancel</td>
 		</tr>
 		<input type="submit" disabled style="display: none">
 	{% endfor %}

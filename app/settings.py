@@ -18,6 +18,7 @@ RECAPTCHA_PRIVATE_KEY = env.str("RECAPTCHA_PRIVATE_KEY")
 RECAPTCHA_OPTIONS = {'theme':'white'}
 
 UPLOAD_FOLDER = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'app/uploads'))
+LOGS_FOLDER = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'logs'))
 MAX_CONTENT_LENGTH = 5 * 1024 * 1024
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 

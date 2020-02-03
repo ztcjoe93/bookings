@@ -2,32 +2,32 @@
 
 {% block content %}
 <style>
+	body {
+		background-image:url('/static/binary.jpg');
+	}
+
 	td {
 		padding-top:0 !important;
 		padding-bottom:1 !important;
 	}
 </style>
-<div class="mx-auto px-3 pb-3 rounded-lg" style="background-color:#e0f7fa;">
+<div class="mx-auto px-5 pb-3 rounded-lg" style="background-color:#e0f7fa;">
 	<h2 class="mt-3">Location Creation Form</h2>
 	<form action="" method="post">
 	{{form.hidden_tag()}}
 	<table class="table table-borderless my-5">
 		<tbody>
 		<tr>
-			<td class="text-left">{{form.name.label}}</td>
+			<td class="pb-5 text-left">{{form.name.label}}{{form.name(class="form-control")}}</td>
 		</tr>
 		<tr>
-			<td>{{form.name(class="form-control")}}</td>
+			<td class="text-left">{{form.address.label}}{{form.address(class="form-control", rows="5")}}</td>
 		</tr>
 		<tr>
-			<td class="text-left">{{form.address.label}}</td>
-		</tr>
-		<tr>
-			<td>{{form.address(class="form-control", rows="5")}}</td>
 		</tr>
 		</tbody>
 	</table>
-	{{form.submit(class="btn btn-primary")}}
+	{{form.submit(class="btn btn-info")}}
 	</form>
 </div>
 {% endblock %}

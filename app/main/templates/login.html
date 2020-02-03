@@ -15,17 +15,12 @@
 			{{ form.password(size=32, class="form-control", placeholder="Password") }}
 		</p>
 
-		{% for error in form.username.errors %}
+		{% if (form.username.errors or form.password.errors) %}
 			<div class="alert alert-danger alert-dismissible fade show col-md-auto text-left" role="alert">
-				{{ error }}
+					Invalid username/password.
 			</div>
-		{% endfor %}
+		{% endif %} 
 
-		{% for error in form.password.errors %}
-			<div class="alert alert-danger alert-dismissible fade show col-md-auto text-left" role="alert">
-				{{ error }}
-			</div>
-		{% endfor %} 
 
 		<p>
 		<div class="custom-control custom-switch">

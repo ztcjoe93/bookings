@@ -1,5 +1,30 @@
 {% extends "adm_base.html" %}
 
 {% block content %}
-<img src="" alt="index_image">
+<style>
+	body {
+		background-image:url('/static/binary.jpg');
+		color:white;
+	}
+</style>
+
+<h2>Latest News</h2>
+<div class="container">
+<table class="table table-bordered table-primary table-sm col-sm-6 mx-auto">
+	<tr>
+		<th>System action</th>
+		<th>Time</th>
+	</tr>
+	<tr>
+		<td>--</td>
+		<td>--</td>
+	</tr>
+</table>
+<form method="post" action="">
+	<input type="hidden" name="csrf_token" value="{{csrf_token()}}"/>
+	<button href="#" class="btn btn-info">Logs</a>
+</form>
+</div>
+
+
 {% endblock %}

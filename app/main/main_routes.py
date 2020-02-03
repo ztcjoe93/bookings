@@ -10,6 +10,7 @@ from werkzeug.urls import url_parse
 from datetime import datetime
 from itsdangerous import URLSafeTimedSerializer
 from threading import Thread
+from sqlalchemy import and_
 import os.path
 
 #blueprint setup
@@ -29,9 +30,34 @@ def index(username=None):
         username = current_user.username
     return render_template('index.html', username=username)
 
-@main_panel.route('/events')
+@main_panel.route('/events', methods=['GET', 'POST'])
 def events():
-    pages = db.session.query(Event).join(Location, Location.id==Event.location_id).with_entities(Event.id, Event.name, Event.capacity, Event.start, Event.end, Location.name.label('location_name'), Event.img_name, Event.description).paginate(max_per_page=5)
+    if request.method == 'POST':
+        f = request.form
+       
+        qr = []
+        if f['eventName']:
+            qr.append(Event.name.ilike('%'+f['eventName']+'%'))
+
+        if f['eventEnd'] and f['eventStart'] == "":
+            qr.append(Event.end >= f['eventEnd'])
+        elif f['eventStart'] and f['eventEnd']:
+            qr.append(and_(Event.start <= f['eventStart'], Event.end >= f['eventEnd']))
+        elif f['eventStart'] and f['eventEnd'] == "":
+            qr.append(and_(Event.start <= f['eventStart'], Event.end >= f['eventStart']))
+ 
+        if f['eventLocation']:
+            qr.append(Location.name.ilike('%'+f['eventLocation']+'%'))
+
+        pages = db.session.query(Event) \
+                    .join(Location, Location.id==Event.location_id) \
+                    .with_entities(Event.id, Event.name, Event.capacity, Event.start, Event.end, Location.name.label('location_name'), Event.img_name, Event.description) \
+                    .filter(*qr) \
+                    .paginate(max_per_page=5)
+
+    else:
+        pages = db.session.query(Event).join(Location, Location.id==Event.location_id).with_entities(Event.id, Event.name, Event.capacity, Event.start, Event.end, Location.name.label('location_name'), Event.img_name, Event.description).paginate(max_per_page=5)
+
     events = pages.items
     return render_template('events.html', events=events, pagination=pages)
 
@@ -84,7 +110,8 @@ def book(event_id):
         booking = Booking(user_id=current_user.id, 
                         event_id=event_id, 
                         quantity=form.amount.data,
-                        book_time=datetime.utcnow())
+                        book_time=datetime.utcnow(),
+                        last_modified=datetime.utcnow())
         db.session.add(booking)
         db.session.commit()
         app.logger.info('[User ID {} has booked {} tickets for Event ID {}.]'.format(booking.user_id, booking.quantity, booking.event_id))

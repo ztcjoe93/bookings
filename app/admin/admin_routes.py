@@ -1,5 +1,5 @@
 import logging
-from flask import Blueprint, render_template, redirect, url_for, flash, make_response, request
+from flask import Blueprint, render_template, redirect, url_for, flash, make_response, request, send_from_directory
 from flask import current_app as app
 from flask_login import current_user, login_user, logout_user, login_required
 from flask_mail import Message, Mail
@@ -31,9 +31,11 @@ def validation(user):
     else:
         return True 
 
-@admin_panel.route('/main', methods=['GET'])
+@admin_panel.route('/main', methods=['GET', 'POST'])
 @login_required
 def main():
+    if request.method == 'POST':
+        return send_from_directory(app.config['LOGS_FOLDER'], "information.log", as_attachment=True)
     return render_template('/main.html') if validation(current_user)==True else redirect(url_for('main_panel.index'))
 
 @admin_panel.route('/alldata', methods=['GET', 'POST'])
@@ -116,8 +118,8 @@ def event_modify():
 
     if form.validate_on_submit():
         #check for existing bookings
-        if Booking.query.filter(Event.id==form.event_id.data).first() != None:
-            flash("existing records, please delete before removal", "error")
+        if Booking.query.filter(Booking.event_id==form.event_id.data).first() != None:
+            flash("There's an existing booking/location for this event.", "error")
         else:
             Event.query.filter(Event.id==form.event_id.data).delete()
             db.session.commit()
@@ -208,17 +210,3 @@ def location_mod(location_id):
 
     return render_template('/location_modify_id.html', form=form, location=location) if validation(current_user)==True else redirect(url_for('main_panel.index'))
 
-'''
-@admin_panel.route('/message', methods=['GET', 'POST'])
-def message():
-    if request.method == 'POST':
-        content = request.form['message']
-        
-        msg = Message(subject="Test email from NZR",
-                        sender=app.config.get("MAIL_USERNAME"),
-                        recipients=["zhengtat@gmail.com"],
-                        body=content)
-        mail.send(msg)
-
-    return render_template('message.html') if validation(current_user)==True else redirect(url_for('main_panel.index'))
-'''
