@@ -59,19 +59,6 @@ class AdminRemoveForm(FlaskForm):
     event_id = HiddenField(validators=[Optional()])
     location_id = HiddenField(validators=[Optional()])
 
-class RemoveForm(FlaskForm):
-    book_id = HiddenField()
-    event_id = HiddenField()
-    qt = IntegerField(widget=HiddenInput())
-    md_qt = IntegerField("Modified Quantity", validators=[Optional()])
-
-    def validate_md_qt(self, md_qt):
-        if md_qt.data == 0:
-            raise ValidationError('Kindly utilize the x button if you wish to cancel your booking.')
-        elif md_qt.data < 0 or md_qt.data >= self.qt.data:
-            raise ValidationError('Kindly enter a valid input for the number of tickets you wish to adjust to.')
-            
-
 class UpdateForm(FlaskForm):
     org_name = StringField(widget=HiddenInput())
     name = StringField('Event Name', validators=[Optional()])

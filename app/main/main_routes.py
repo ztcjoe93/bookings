@@ -2,7 +2,7 @@ from flask import abort, redirect, url_for, render_template, request, make_respo
 from flask_login import current_user, login_user, logout_user, login_required
 from flask_mail import Mail, Message
 from flask import current_app as app
-from app.forms import LoginForm, RegistrationForm, BookingForm, RemoveForm, PasswordRequestForm, PasswordResetForm
+from app.forms import LoginForm, RegistrationForm, BookingForm, PasswordRequestForm, PasswordResetForm
 from app.models import db, User, Booking, Event, Location
 from app.extensions import mail
 from werkzeug.security import generate_password_hash
@@ -76,29 +76,32 @@ def download_file(filename):
 @login_required
 def mybookings():
     bookings = db.session.query(Booking).filter(Booking.user_id==current_user.id).join(Event, Event.id==Booking.event_id).with_entities(Booking.id, Booking.event_id, Booking.quantity, Event.name).all()
-    form = RemoveForm()
-    if form.validate_on_submit():
-        if form.md_qt.data is not None:
-            booking = Booking.query.filter(Booking.id==form.book_id.data).first()
-            difference = booking.quantity - form.md_qt.data
-            booking.quantity = form.md_qt.data 
-            Event.query.get(form.event_id.data).capacity += difference
-            booking.last_modified = datetime.utcnow() 
+
+    if request.method == 'POST':
+        f = request.form
+
+        booking = db.session.query(Booking).filter(Booking.id == f['booking_id']).first()
+        event = db.session.query(Event).filter(Event.id == booking.event_id).first()
+        if(f['mod_type'] == 'modify'):
+            booking.quantity -= int(f['md_qt'])
+            event.capacity += int(f['md_qt'])
+            flash("Returned {} tickets for {} event.".format(f['md_qt'], event.name), "info")
+            app.logger.info('User ID {} returned {} tickets for Event ID {} at {}'.format(current_user.id, f['md_qt'], event.id, datetime.now()))
         else:
-            Booking.query.filter(Booking.id==form.book_id.data).delete()
-            Event.query.get(form.event_id.data).capacity += form.qt.data
-        
-        flash("Successfully updated.", "info")
+            event.capacity += booking.quantity
+            Booking.query.filter(Booking.id == f['booking_id']).delete()
+            app.logger.info('User ID {} cancelled Booking ID {} at {}.'.format(current_user.id, booking.id, datetime.now())) 
+
         db.session.commit()
         return redirect(url_for('main_panel.mybookings'))
-    return render_template('mybookings.html', bookings=bookings, form=form)
+    return render_template('mybookings.html', bookings=bookings)
 
 @main_panel.route('/book/<int:event_id>', methods=['GET', 'POST'])
 @login_required
 def book(event_id):
     data = db.session.query(Event).join(Location, Location.id==Event.location_id).with_entities(Event.name, Event.capacity, Event.start, Event.end, Location.name.label('location_name'), Location.address, Event.img_name).filter(Event.id==event_id).first()
 
-    ticket_amt = [(i,i+1) for i in range(data.capacity)]
+    ticket_amt = [(i,i) for i in range(1, data.capacity+1)]
     form = BookingForm()
     form.amount.choices = ticket_amt
 
@@ -114,7 +117,7 @@ def book(event_id):
                         last_modified=datetime.utcnow())
         db.session.add(booking)
         db.session.commit()
-        app.logger.info('[User ID {} has booked {} tickets for Event ID {}.]'.format(booking.user_id, booking.quantity, booking.event_id))
+        app.logger.info('User ID {} has booked {} tickets (Booking ID {}) for Event ID {} at {}.'.format(booking.user_id, booking.quantity, booking.id, booking.event_id, datetime.now()))
         flash('Successfully purchased {} tickets for {}'.format(form.amount.data, data.name), "info") 
         return redirect(url_for('main_panel.events'))
     return render_template('book.html', event_id=event_id, data=data, form=form)
@@ -135,8 +138,8 @@ def login():
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
             if not next_page or url_parse(next_page).netloc != '':
-                app.logger.info('[User {} has logged in.]'.format(user.username))
                 flash('Successfully logged in!', 'info')
+                app.logger.info('User ID {} logged in at {}'.format(user.id, datetime.now()))
                 return redirect(url_for('main_panel.index'))
             else:
                 return redirect(next_page)
@@ -148,7 +151,7 @@ def login():
 
 @main_panel.route('/logout')
 def logout():
-    app.logger.info('[User {} has logged out.]'.format(current_user.username))
+    app.logger.info('User ID {} logged out at {}.'.format(current_user.id, datetime.now()))
     logout_user()
     flash('Successfully logged out!', 'info')
     return redirect(url_for('main_panel.index'))
@@ -163,6 +166,7 @@ def register():
         user.set_pwd(form.password.data)
         db.session.add(user)
         db.session.commit()
+        app.logger.info('User ID {} created at {}'.format(user.id, datetime.now()))
         token = ts.dumps(user.email, salt='verify-email')
         verify_url = url_for('main_panel.verify', token=token, _external=True)
 
@@ -175,7 +179,7 @@ def register():
         Thread(target=send_email, args=(app._get_current_object(), msg)).start()
 
         flash("A verification email has been sent, kindly check your email.", "info")
-        app.logger.info('[User {} has been newly registered.]'.format(user.username)) 
+        app.logger.info('Verification email thread started for User ID {} at {}'.format(user.id, datetime.now()))
         return redirect(url_for('main_panel.login'))
     return render_template('register.html', form=form)
 
@@ -189,13 +193,16 @@ def verify(token):
     db.session.commit()
 
     flash("Account successfully verified.", "info") 
+    app.logger.info('User ID {} verified at {}'.format(user.id, datetime.now()))
 
-    return render_template('verify.html')
+    return redirect(url_for('main_panel.login'))
 
 
 def send_email(app, msg):
     with app.app_context():
         mail.send(msg)
+        app.logger.info('Email has been sent at {}'.format(datetime.now()))
+
 
 @main_panel.route('/reset', methods=['GET', 'POST'])
 def reset():
@@ -215,6 +222,7 @@ def reset():
             Thread(target=send_email, args=(app._get_current_object(), msg)).start()
 
         flash("Password reset requested, kindly check your email.", "info") 
+        app.logger.info('User ID {} requested for password reset at {}'.format(current_user.id, datetime.now()))
         return redirect(url_for('main_panel.login'))
     return render_template('reset.html', form=form)
 
@@ -228,6 +236,7 @@ def reset_token(token):
         user = User.query.filter_by(email=email).first()
         user.set_pwd(form.password.data)
         db.session.commit()
+        app.logger.info('Password reset completed for User ID {} at {}'.format(current_user.id, datetime.now()))
         return redirect(url_for('main_panel.login'))
 
     return render_template('reset_token.html', form=form, token=token, email=email)

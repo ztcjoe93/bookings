@@ -10,6 +10,7 @@ from app.models import User, Booking, Event, Location
 from app.forms import EventForm, UpdateForm, UpdateLForm, AdminRemoveForm, LocationForm
 from app.extensions import mail, login_manager, db
 import datetime
+from datetime import datetime
 import os
 
 MODEL_ATTRIBUTES = ['get_id', 'is_active', 'is_anonymous', 'is_authenticated', 'metadata', 'query', 'query_class']
@@ -26,7 +27,7 @@ admin_panel = Blueprint('admin_panel',
 
 def validation(user):
     if user.su_rights == False:
-        app.logger.info("[Attempt to log in to admin panel by user_id: %s]", user.id)
+        app.logger.info("Attempt to access Admin Panel by User ID {} at {}".format(current_user.id, datetime.now()))
         return False
     else:
         return True 
@@ -34,7 +35,8 @@ def validation(user):
 @admin_panel.route('/main', methods=['GET', 'POST'])
 @login_required
 def main():
-    if request.method == 'POST':
+    if request.method == 'POST': 
+        app.logger.info('Logs retrieved by Admin ID {} at {}'.format(current_user.id, datetime.now())) 
         return send_from_directory(app.config['LOGS_FOLDER'], "information.log", as_attachment=True)
     return render_template('/main.html') if validation(current_user)==True else redirect(url_for('main_panel.index'))
 
@@ -57,11 +59,12 @@ def alldata_stype(sub_type):
 
     if request.method == 'POST':
         user = User.query.filter(User.id==request.form['idValue']).first()
-        print(user.username)
         if request.form['modType'] == "revoke": 
             user.su_rights = False 
+            app.logger.info('User ID {} demoted to user by Admin ID {} at {}'.format(user.id, current_user.id, datetime.now()))
         else: 
             user.su_rights = True
+            app.logger.info('User ID {} promoted to admin by Admin ID {} at {}'.format(user.id, current_user.id, datetime.now()))
         db.session.commit()
 
         return redirect(url_for('admin_panel.alldata_stype', sub_type='users'))
@@ -92,6 +95,7 @@ def event_create():
 
         db.session.add(event)
         db.session.commit()
+        app.logger.info('Event {} created by Admin ID {} at {}'.format(event.name, current_user.id, datetime.now()))
         return redirect(url_for('admin_panel.alldata_stype', sub_type='events'))
 
     return render_template('/event_create.html', form=form) if validation(current_user)==True else redirect(url_for('main_panel.index'))
@@ -105,6 +109,7 @@ def location_create():
         db.session.add(Location(name=form.name.data, address=form.address.data))
         db.session.commit()
         flash("Successfully created Location: {}".format(form.name.data), 'info')
+        app.logger.info('Location {} created by Admin ID {} at {}'.format(form.name.data, current_user.id, datetime.now()))
         return redirect(url_for('admin_panel.alldata_stype', sub_type='locations'))
     
     return render_template('/location_create.html', form=form) if validation(current_user)==True else redirect(url_for('main_panel.index'))
@@ -123,6 +128,7 @@ def event_modify():
         else:
             Event.query.filter(Event.id==form.event_id.data).delete()
             db.session.commit()
+            app.logger.info('Event ID {} deleted by Admin ID {} at {}'.format(form.event_id.data, current_user.id, datetime.now()))
 
         return redirect(url_for('admin_panel.event_modify'))
 
@@ -172,6 +178,7 @@ def event_mod(event_id):
             event.description = form.description.data
 
         db.session.commit()
+        app.logger.info('Event ID {} modified by Admin ID {} at {}'.format(form.id, current_user.id, datetime.now()))
         return redirect(url_for('admin_panel.event_modify'))
     
     return render_template('event_modify_id.html', form=form, event=event, locations=locations) if validation(current_user)==True else redirect(url_for('main_panel.index'))
@@ -190,7 +197,8 @@ def location_modify():
         else:
             Location.query.filter(Location.id==form.location_id.data).delete()
             db.session.commit()
-        
+            app.logger.info('Location ID {} deleted by Admin ID {} at {}'.format(form.location_id.data, current_user.id, datetime.now())) 
+
         return redirect(url_for('admin_panel.location_modify'))
 
     return render_template('/modify.html', data=data, form=form) if validation(current_user)==True else redirect(url_for('main_panel.index'))
@@ -205,6 +213,7 @@ def location_mod(location_id):
         if form.address.data is not "":
             location.address = form.address.data
             db.session.commit()
+            app.logger.info('Location ID {} modified by Admin ID {} at {}'.format(location.id, current_user.id, datetime.now())) 
 
         return redirect(url_for('admin_panel.location_modify'))
 

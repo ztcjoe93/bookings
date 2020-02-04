@@ -2,44 +2,41 @@
 
 {% block content %}
 <script>
-function cf(book_id, event_id, qt){
-	if(confirm("Are you sure you wish to cancel the booking?")){
-		let form = document.getElementById("modification");
-		document.getElementById("book_id").value = book_id;
-		document.getElementById("event_id").value = event_id;
-		document.getElementById("qt").value = qt;
-		form.submit();
-	}
-}
+	function ticketModify(event_id, booking_id, quantity, modType){
+		var sqt = document.getElementById(booking_id).value;
 
-function md(book_id, event_id, qt){
-	md_qt = qt - document.getElementById("md_qt").value;
-	if(confirm("Are you sure you wish to return " + md_qt + " tickets for the event?")){
-		let form = document.getElementById("modification");
-		document.getElementById("book_id").value = book_id;
-		document.getElementById("event_id").value = event_id;
-		document.getElementById("qt").value = qt;
+		var form = document.getElementById("modification");
+		form['mod_type'].value = modType;
+		form['booking_id'].value = booking_id;
+
+		if(modType == 'modify'){
+			form['md_qt'].value = sqt;
+		}
+		
 		form.submit();
 	}
-}
 </script>
+
 <style>
 	body {
 		background-image:url("/static/lib.jpg");
 	}
 </style>
+
 <div class="text-white container">
 <h1>My Bookings</h1>
 {% if bookings %}
 <table class="table table-dark table-bordered">
 <form id="modification" action="" method="post">
-{{ form.hidden_tag() }}
-	<thead class="thead-dark">
+	<input type="hidden" name="csrf_token" value="{{csrf_token()}}" />
+	<input type="hidden" name="md_qt">
+	<input type="hidden" name="mod_type">
+	<input type="hidden" name="booking_id">
 		<tr>
 			<th>No.</th>
 			<th>Event</th>
 			<th>Quantity</th>
-			<th colspan="4">Modified Quantity</th>
+			<th colspan="4">Return Tickets</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -48,11 +45,18 @@ function md(book_id, event_id, qt){
 			<td>{{ loop.index }}</td>
 			<td><a href="{{ url_for('main_panel.load_event', event_id=booking.event_id) }}">{{ booking.name }}</a></td>
 			<td>{{ booking.quantity }}</td>
-			<td>{{ form.md_qt(class='form-control col-sm-6') }}</td>
-			<td><button class="btn btn-primary w-100" onclick="md({{ booking.id }}, {{ booking.event_id }}, {{ booking.quantity }})">Modify</button></td>
-			<td><button class="btn btn-danger w-100" onclick="cf({{ booking.id }}, {{ booking.event_id }}, {{ booking.quantity }})">Cancel</td>
+			<td>
+				<select id={{booking.id}} class='form-control col-sm-6' {%if booking.quantity==1%}disabled{%endif%}>
+					{%for i in range(booking.quantity-1)%}
+					<option value="{{i+1}}">{{i+1}}</option>
+					{%endfor%}
+				</select>
+			</td>
+			<td>
+				<button class="btn btn-primary w-100" onclick="ticketModify({{booking.event_id}}, {{booking.id}}, {{booking.quantity}}, 'modify')" {%if booking.quantity==1%}disabled{%endif%}>Return</button>
+			</td>
+			<td><button class="btn btn-danger w-100" onclick="ticketModify({{booking.event_id}}, {{booking.id}}, {{booking.quantity}}, 'cancel')">Cancel</button></td>
 		</tr>
-		<input type="submit" disabled style="display: none">
 	{% endfor %}
 	</tbody>
 </form>
