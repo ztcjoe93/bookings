@@ -1,6 +1,7 @@
 from .extensions import db, login_manager
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+import datetime
 
 def attr_expr(model_class):
     attr_list = []
@@ -15,7 +16,11 @@ def attr_expr(model_class):
 def load_user(id):
     return User.query.get(int(id))
 
-class User(UserMixin, db.Model):
+class JsonModel(object):
+    def as_dict(self):
+        return {c.name: getattr(self, c.name).isoformat() if isinstance(getattr(self, c.name), datetime.datetime) else getattr(self, c.name) for c in self.__table__.columns}
+
+class User(UserMixin, db.Model, JsonModel):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True, nullable=False)
@@ -30,7 +35,7 @@ class User(UserMixin, db.Model):
     def check_pwd(self, password):
             return check_password_hash(self.pwd_hash, password)
 
-class Booking(db.Model):
+class Booking(db.Model, JsonModel):
     __tablename__ = 'bookings'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -39,7 +44,7 @@ class Booking(db.Model):
     book_time = db.Column(db.DateTime, nullable=True)
     last_modified = db.Column(db.DateTime, nullable=True)
 
-class Event(db.Model):
+class Event(db.Model, JsonModel):
     __tablename__ = 'events'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), nullable=False)
@@ -53,7 +58,7 @@ class Event(db.Model):
     
     bookings = db.relationship("Booking", backref="events")
 
-class Location(db.Model):
+class Location(db.Model, JsonModel):
     __tablename__ = 'locations'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), nullable=False, unique=True)

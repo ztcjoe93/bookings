@@ -172,3 +172,7 @@
 2020-02-04 16:27:21,263 INFO app Thread-2 : Location ID 35 modified by Admin ID 1 at 2020-02-04 16:27:21.263370
 2020-02-04 16:27:55,321 INFO app Thread-2 : Location ID 35 deleted by Admin ID 1 at 2020-02-04 16:27:55.321767
 2020-02-04 16:29:52,609 INFO app Thread-13 : User ID 11 promoted to admin by Admin ID 1 at 2020-02-04 16:29:52.609603
+2020-02-04 17:42:28,882 INFO app Thread-15 : Location ID 11 modified by Admin ID 1 at 2020-02-04 17:42:28.882342
+2020-02-04 19:08:46,710 INFO app Thread-4 : User ID 1 logged out at 2020-02-04 19:08:46.710763.
+2020-02-04 19:10:01,597 INFO app Thread-6 : User ID 2 logged in at 2020-02-04 19:10:01.597534
+2020-02-04 19:10:44,154 INFO app Thread-9 : User ID 2 logged out at 2020-02-04 19:10:44.154151.

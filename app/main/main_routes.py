@@ -12,6 +12,7 @@ from itsdangerous import URLSafeTimedSerializer
 from threading import Thread
 from sqlalchemy import and_
 import os.path
+import json
 
 #blueprint setup
 main_panel = Blueprint('main_panel',
@@ -240,3 +241,50 @@ def reset_token(token):
         return redirect(url_for('main_panel.login'))
 
     return render_template('reset_token.html', form=form, token=token, email=email)
+
+@main_panel.route('/api', methods=['GET'])
+def home():
+    return '\
+        <html>\
+            events<br>\
+            - ?name : double wildcards search, event name that contains string<br>\
+            - ?loc : double wildcards search for location name, search based on id for first result<br><br>\
+            locations<br>\
+            - ?name : double wildcards search, location name that contains string<br>\
+            - ?addr : double wildcards search, address name that contains string\
+        </html>\
+    ' 
+
+@main_panel.route('/api/v1/resources/events', methods=['GET'])
+def api_events():
+    params = request.args 
+    name = params.get('name')
+    loc = params.get('loc')
+    qr = []
+
+    if name:
+        qr.append(Event.name.ilike("%"+name+"%"))
+    if loc:
+        the_loc = Location.query.filter(Location.name.ilike("%"+loc+"%")).first()
+        qr.append(Event.location_id == the_loc.id)
+
+    dataset = Event.query.filter(*qr).all()
+
+    return json.dumps([data.as_dict() for data in dataset], indent=4, sort_keys=True)
+
+@main_panel.route('/api/v1/resources/locations', methods=['GET'])
+def api_locations():
+    params = request.args 
+    name = params.get('name')
+    addr = params.get('addr')
+    
+    qr = []
+
+    if name:
+        qr.append(Location.name.ilike("%"+name+"%"))
+    if addr:
+        qr.append(Location.address.ilike("%"+addr+"%"))
+        
+    dataset = Location.query.filter(*qr).all()
+
+    return json.dumps([data.as_dict() for data in dataset], indent=4, sort_keys=True)
