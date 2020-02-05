@@ -12,6 +12,7 @@ from itsdangerous import URLSafeTimedSerializer
 from threading import Thread
 from sqlalchemy import and_
 import os.path
+import random
 import json
 
 #blueprint setup
@@ -27,9 +28,10 @@ def main_url():
 
 @main_panel.route('/index')
 def index(username=None):
+    data = Event.query.order_by(Event.start.desc()).limit(6).all()
     if current_user.is_authenticated:
         username = current_user.username
-    return render_template('index.html', username=username)
+    return render_template('index.html', username=username, data=data)
 
 @main_panel.route('/events', methods=['GET', 'POST'])
 def events():

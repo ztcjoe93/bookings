@@ -1,14 +1,19 @@
 {% extends "adm_base.html" %}
 
 {% block content %}
+<style>
+	body {
+		background-image:url('/static/binary.jpg');
+	}
+</style>
 <div class="mx-auto container">
 	<form method="post" action="">
 		{{ form.hidden_tag() }}
-		<table class="table table-bordered table-dark table-striped">
+		<table class="table table-bordered table-light table-striped">
 			<tr>
-				<th>Data Type</th>
-				<th>Current Value</th>
-				<th>Update Value</th>
+				<th class="table-dark">Data Type</th>
+				<th class="table-dark">Current Value</th>
+				<th class="table-dark">Update Value</th>
 			</tr>
 			<tr>
 				<td>Id</td>

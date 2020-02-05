@@ -176,3 +176,28 @@
 2020-02-04 19:08:46,710 INFO app Thread-4 : User ID 1 logged out at 2020-02-04 19:08:46.710763.
 2020-02-04 19:10:01,597 INFO app Thread-6 : User ID 2 logged in at 2020-02-04 19:10:01.597534
 2020-02-04 19:10:44,154 INFO app Thread-9 : User ID 2 logged out at 2020-02-04 19:10:44.154151.
+2020-02-05 15:02:11,906 INFO app Thread-84 : User ID 1 logged in at 2020-02-05 15:02:11.906723
+2020-02-05 15:07:46,780 INFO app Thread-145 : Event Dragon Age created by Admin ID 1 at 2020-02-05 15:07:46.780223
+2020-02-05 15:08:29,232 INFO app Thread-150 : Event FIFA 20 created by Admin ID 1 at 2020-02-05 15:08:29.231979
+2020-02-05 15:09:09,876 INFO app Thread-154 : Event FIFA  created by Admin ID 1 at 2020-02-05 15:09:09.876923
+2020-02-05 15:12:15,074 INFO app Thread-2 : Event ID 32 modified by Admin ID 1 at 2020-02-05 15:12:15.074376
+2020-02-05 15:12:24,702 INFO app Thread-5 : Event ID 32 modified by Admin ID 1 at 2020-02-05 15:12:24.702440
+2020-02-05 15:12:39,308 INFO app Thread-9 : Event ID 32 modified by Admin ID 1 at 2020-02-05 15:12:39.308782
+2020-02-05 15:13:04,315 INFO app Thread-15 : Event ID 31 modified by Admin ID 1 at 2020-02-05 15:13:04.315873
+2020-02-05 15:14:33,295 INFO app Thread-23 : Event Grand Theft Auto 5 created by Admin ID 1 at 2020-02-05 15:14:33.295690
+2020-02-05 15:15:18,393 INFO app Thread-27 : Event Hellblade created by Admin ID 1 at 2020-02-05 15:15:18.393115
+2020-02-05 15:16:21,788 INFO app Thread-31 : Event Horizon Zero Dawn created by Admin ID 1 at 2020-02-05 15:16:21.788516
+2020-02-05 15:17:12,650 INFO app Thread-35 : Event Last of Us created by Admin ID 1 at 2020-02-05 15:17:12.650832
+2020-02-05 15:17:49,798 INFO app Thread-39 : Event Modern Warfare created by Admin ID 1 at 2020-02-05 15:17:49.798582
+2020-02-05 15:18:34,604 INFO app Thread-43 : Event Nier Automata created by Admin ID 1 at 2020-02-05 15:18:34.604218
+2020-02-05 15:19:55,088 INFO app Thread-47 : Event Night in the Woods created by Admin ID 1 at 2020-02-05 15:19:55.088061
+2020-02-05 15:20:25,374 INFO app Thread-51 : Event Overwatch created by Admin ID 1 at 2020-02-05 15:20:25.374399
+2020-02-05 15:21:19,081 INFO app Thread-55 : Event Red Dead Redemption 2 created by Admin ID 1 at 2020-02-05 15:21:19.081917
+2020-02-05 15:21:56,255 INFO app Thread-59 : Event Resident Evil 2 created by Admin ID 1 at 2020-02-05 15:21:56.255512
+2020-02-05 15:22:38,081 INFO app Thread-63 : Event Sekiro created by Admin ID 1 at 2020-02-05 15:22:38.081630
+2020-02-05 15:23:21,141 INFO app Thread-67 : Event Shadow of the Colossus created by Admin ID 1 at 2020-02-05 15:23:21.141679
+2020-02-05 15:23:52,034 INFO app Thread-71 : Event Spiderman created by Admin ID 1 at 2020-02-05 15:23:52.034222
+2020-02-05 15:24:31,525 INFO app Thread-75 : Event Titanfall 2 created by Admin ID 1 at 2020-02-05 15:24:31.525924
+2020-02-05 15:25:11,728 INFO app Thread-79 : Event Uncharted 4 created by Admin ID 1 at 2020-02-05 15:25:11.728033
+2020-02-05 15:25:43,671 INFO app Thread-84 : Event Witcher 3 created by Admin ID 1 at 2020-02-05 15:25:43.671406
+2020-02-05 15:26:09,320 INFO app Thread-92 : Event ID 45 modified by Admin ID 1 at 2020-02-05 15:26:09.320131

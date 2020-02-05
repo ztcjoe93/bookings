@@ -174,11 +174,11 @@ def event_mod(event_id):
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 event.img_name = form.img_name.data.filename
 
-        if form.description.data is not None:
+        if form.description.data is not None and form.description.data is not "":
             event.description = form.description.data
 
         db.session.commit()
-        app.logger.info('Event ID {} modified by Admin ID {} at {}'.format(form.id, current_user.id, datetime.now()))
+        app.logger.info('Event ID {} modified by Admin ID {} at {}'.format(event_id, current_user.id, datetime.now()))
         return redirect(url_for('admin_panel.event_modify'))
     
     return render_template('event_modify_id.html', form=form, event=event, locations=locations) if validation(current_user)==True else redirect(url_for('main_panel.index'))
