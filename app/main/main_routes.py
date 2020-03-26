@@ -22,6 +22,11 @@ main_panel = Blueprint('main_panel',
 			static_folder="static",
                         url_prefix="/")
 
+def send_email(app, msg):
+    with app.app_context():
+        mail.send(msg)
+        app.logger.info('Email has been sent at {}'.format(datetime.now()))
+
 @main_panel.route('/')
 def main_url():
     return redirect(url_for('main_panel.index'))
@@ -174,13 +179,13 @@ def register():
         verify_url = url_for('main_panel.verify', token=token, _external=True)
 
         html = render_template('email_verify.html', verify_url=verify_url)
+
         msg = Message(subject="Email verification for {}".format(user.username),
                     sender=app.config.get("MAIL_USERNAME"),
                     recipients=[user.email],
                     html=html)
 
         Thread(target=send_email, args=(app._get_current_object(), msg)).start()
-
         flash("A verification email has been sent, kindly check your email.", "info")
         app.logger.info('Verification email thread started for User ID {} at {}'.format(user.id, datetime.now()))
         return redirect(url_for('main_panel.login'))
@@ -199,12 +204,6 @@ def verify(token):
     app.logger.info('User ID {} verified at {}'.format(user.id, datetime.now()))
 
     return redirect(url_for('main_panel.login'))
-
-
-def send_email(app, msg):
-    with app.app_context():
-        mail.send(msg)
-        app.logger.info('Email has been sent at {}'.format(datetime.now()))
 
 
 @main_panel.route('/reset', methods=['GET', 'POST'])

@@ -5,15 +5,23 @@
 	function ticketModify(event_id, booking_id, quantity, modType){
 		var sqt = document.getElementById(booking_id).value;
 
+
 		var form = document.getElementById("modification");
 		form['mod_type'].value = modType;
 		form['booking_id'].value = booking_id;
 
 		if(modType == 'modify'){
-			form['md_qt'].value = sqt;
+			if(confirm("Do you wish to return "+sqt+" tickets?")){
+				form['md_qt'].value = sqt;
+				form.submit();
+			}
+		} else {
+			if(confirm("Do you wish to return all tickets?")){
+				form.submit();
+			}
 		}
 		
-		form.submit();
+		return false;
 	}
 </script>
 
@@ -53,9 +61,9 @@
 				</select>
 			</td>
 			<td>
-				<button class="btn btn-primary w-100" onclick="ticketModify({{booking.event_id}}, {{booking.id}}, {{booking.quantity}}, 'modify')" {%if booking.quantity==1%}disabled{%endif%}>Return</button>
+				<button class="btn btn-primary w-100" onclick="return ticketModify({{booking.event_id}}, {{booking.id}}, {{booking.quantity}}, 'modify')" {%if booking.quantity==1%}disabled{%endif%}>Return</button>
 			</td>
-			<td><button class="btn btn-danger w-100" onclick="ticketModify({{booking.event_id}}, {{booking.id}}, {{booking.quantity}}, 'cancel')">Cancel</button></td>
+			<td><button class="btn btn-danger w-100" onclick="return ticketModify({{booking.event_id}}, {{booking.id}}, {{booking.quantity}}, 'cancel')">Cancel</button></td>
 		</tr>
 	{% endfor %}
 	</tbody>
